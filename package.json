@@ -7,7 +7,7 @@
 		"bulma": "^0.9.1",
 		"core-js": "^3.6.4",
 		"leancloud-storage": "^4.10.0",
-		"marked": "^1.2.8",
+		"marked": "^2.0.0",
 		"regenerator-runtime": "^0.13.7",
 		"vue": "^2.6.11",
 		"vue-router": "^3.2.0",
