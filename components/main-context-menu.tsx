@@ -70,7 +70,11 @@ const renderMenuItems = (items: MenuItem[]) => {
         );
       case "checkbox":
         return (
-          <ContextMenuCheckboxItem key={index} checked={item.checked}>
+          <ContextMenuCheckboxItem
+            key={index}
+            checked={item.checked}
+            onSelect={item.onSelect}
+          >
             {item.label}
             {shortcut && <ContextMenuShortcut>{shortcut}</ContextMenuShortcut>}
           </ContextMenuCheckboxItem>

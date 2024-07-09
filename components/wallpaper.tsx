@@ -68,12 +68,20 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
     prev() {
       const index = wallpapers.findIndex((image) => image.enddate === date);
       const nextIndex = (index + 1) % wallpapers.length;
-      setDateString(wallpapers[nextIndex].enddate);
+      if (nextIndex && nextIndex >= 0 && nextIndex < wallpapers.length) {
+        setDateString(wallpapers[nextIndex].enddate);
+      } else {
+        setDateString(wallpapers[0].enddate);
+      }
     },
     next() {
       const index = wallpapers.findIndex((image) => image.enddate === date);
       const prevIndex = (index - 1 + wallpapers.length) % wallpapers.length;
-      setDateString(wallpapers[prevIndex].enddate);
+      if (prevIndex && prevIndex >= 0 && prevIndex < wallpapers.length) {
+        setDateString(wallpapers[prevIndex].enddate);
+      } else {
+        setDateString(wallpapers[wallpapers.length - 1].enddate);
+      }
     },
   }));
 
