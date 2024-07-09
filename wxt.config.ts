@@ -6,5 +6,7 @@ export default defineConfig({
   manifest: {
     permissions: ["storage"],
     host_permissions: ["https://cn.bing.com/*"],
+    // @ts-ignore
+    optional_host_permissions: ["*://*/*"],
   },
 });
