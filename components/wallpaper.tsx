@@ -58,24 +58,25 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
     });
   }, []);
 
+  const dates = Object.keys(wallpapers || {});
+  const length = dates.length;
+
   useImperativeHandle(ref, () => ({
     prev() {
       if (!wallpapers || !date) return;
-      const dates = Object.keys(wallpapers);
       const index = dates.indexOf(date);
-      const length = dates.length;
-      setDateString(dates[(index - 1 + length) % length]);
+      setDateString(dates[(index + 1) % length]);
     },
     next() {
       if (!wallpapers || !date) return;
-      const dates = Object.keys(wallpapers);
       const index = dates.indexOf(date);
-      const length = dates.length;
-      setDateString(dates[(index + 1) % length]);
+      setDateString(dates[(index - 1 + length) % length]);
     },
   }));
 
-  const currentWallpaper = date && wallpapers && wallpapers[date];
+  if (!wallpapers || !date) return;
+
+  const currentWallpaper = wallpapers[date];
 
   return (
     <div className="absolute inset-0">

@@ -1,5 +1,7 @@
 import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
-import wallpaper from "./features/wallpaper";
+import wallpaperFeature from "./features/wallpaper";
+import historyFeature from "./features/history";
+import topSitesFeature from "./features/topSites";
 import { useCoreStore } from "./coreStore";
 
 const useAllFeatures = () => {
@@ -40,7 +42,9 @@ function APP() {
   ].filter(Boolean) as MenuItem[];
 
   useEffect(() => {
-    coreStore.registerFeature(wallpaper);
+    coreStore.registerFeature(wallpaperFeature);
+    coreStore.registerFeature(historyFeature);
+    coreStore.registerFeature(topSitesFeature);
   }, []);
 
   return (

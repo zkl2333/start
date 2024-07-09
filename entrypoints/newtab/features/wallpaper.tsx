@@ -4,7 +4,7 @@ import { createFeature } from "../coreStore";
 
 const eventBus = createEventBus();
 
-const wallpaper = createFeature({
+const wallpaperFeature = createFeature({
   name: "Bing 壁纸",
   id: "wallpaper",
   enabled: true,
@@ -45,12 +45,8 @@ const wallpaper = createFeature({
       };
     }, [wallpaperRef]);
 
-    return (
-      <div className="relative isolate flex min-h-svh w-full flex-col">
-        <Wallpaper ref={wallpaperRef} />
-      </div>
-    );
+    return <Wallpaper ref={wallpaperRef} />;
   },
 });
 
-export default wallpaper;
+export default wallpaperFeature;
