@@ -2,33 +2,24 @@ import { forwardRef, useImperativeHandle } from "react";
 import { storage } from "wxt/storage";
 
 interface WallpaperItem {
-  startdate: string;
-  fullstartdate: string;
-  enddate: string;
   url: string;
-  urlbase: string;
   copyright: string;
   copyrightlink: string;
-  title: string;
 }
+
+type DateString = string;
 
 export interface WallpaperRef {
   next: () => void;
   prev: () => void;
 }
 
-const fetchImages = async (idx: number, n: number) => {
+const fetchImages = async () => {
   const res = await fetch(
-    `https://cn.bing.com/HPImageArchive.aspx?format=js&idx=${idx}&n=${n}&uhd=1&uhdwidth=3840&uhdheight=2160&mkt=zh-CN`
+    "https://cdn.jsdelivr.net/gh/asvow/bing-wallpaper@main/bing.json"
   );
-  const data = await res.json();
-  return data.images;
-};
-
-const fetchAllImages = async () => {
-  const images1 = await fetchImages(0, 7);
-  const images2 = await fetchImages(8, 8);
-  return images1.concat(images2);
+  const data = (await res.json()) as Record<string, WallpaperItem>;
+  return data;
 };
 
 const getTodayDate = () => {
@@ -42,8 +33,11 @@ const getTodayDate = () => {
 };
 
 const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
-  const [wallpapers, setWallpapers] = useState<WallpaperItem[]>([]);
-  const [date, setDate] = useState<string | null>(null);
+  const [wallpapers, setWallpapers] = useState<Record<
+    DateString,
+    WallpaperItem
+  > | null>(null);
+  const [date, setDate] = useState<DateString | null>(null);
 
   const setDateString = async (date: string) => {
     storage.setItem("sync:wallpaperDate", date);
@@ -59,34 +53,29 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
       }
     });
 
-    fetchAllImages().then((images) => {
+    fetchImages().then((images) => {
       setWallpapers(images);
     });
   }, []);
 
   useImperativeHandle(ref, () => ({
     prev() {
-      const index = wallpapers.findIndex((image) => image.enddate === date);
-      const nextIndex = (index + 1) % wallpapers.length;
-      if (nextIndex && nextIndex >= 0 && nextIndex < wallpapers.length) {
-        setDateString(wallpapers[nextIndex].enddate);
-      } else {
-        setDateString(wallpapers[0].enddate);
-      }
+      if (!wallpapers || !date) return;
+      const dates = Object.keys(wallpapers);
+      const index = dates.indexOf(date);
+      const length = dates.length;
+      setDateString(dates[(index - 1 + length) % length]);
     },
     next() {
-      const index = wallpapers.findIndex((image) => image.enddate === date);
-      const prevIndex = (index - 1 + wallpapers.length) % wallpapers.length;
-      if (prevIndex && prevIndex >= 0 && prevIndex < wallpapers.length) {
-        setDateString(wallpapers[prevIndex].enddate);
-      } else {
-        setDateString(wallpapers[wallpapers.length - 1].enddate);
-      }
+      if (!wallpapers || !date) return;
+      const dates = Object.keys(wallpapers);
+      const index = dates.indexOf(date);
+      const length = dates.length;
+      setDateString(dates[(index + 1) % length]);
     },
   }));
 
-  const currentWallpaper =
-    wallpapers.find((image) => image.enddate === date) || wallpapers[0];
+  const currentWallpaper = date && wallpapers && wallpapers[date];
 
   return (
     <div className="absolute inset-0">
@@ -94,15 +83,19 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
         <>
           <img
             className="w-full h-full object-cover"
-            src={`https://cn.bing.com${currentWallpaper.url}`}
-            alt={currentWallpaper.url}
+            src={currentWallpaper.url}
+            alt={currentWallpaper.copyright}
           />
           <div>
             <div className="absolute bottom-0 right-0 p-4 bg-opacity-50 text-white text-right [text-shadow:_0_0_4px_rgb(0_0_0)]">
-              <div className="text-sm">
-                {currentWallpaper.title} - {currentWallpaper.enddate}
-              </div>
-              <div className="text-xs">{currentWallpaper.copyright}</div>
+              <a
+                href={currentWallpaper.copyrightlink}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-xs"
+              >
+                {currentWallpaper.copyright}
+              </a>
             </div>
           </div>
         </>

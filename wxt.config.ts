@@ -5,7 +5,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: {
     permissions: ["storage"],
-    host_permissions: ["https://cn.bing.com/*"],
+    host_permissions: [],
     // @ts-ignore
     optional_host_permissions: ["*://*/*"],
   },
