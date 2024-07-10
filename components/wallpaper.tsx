@@ -39,7 +39,7 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   > | null>(null);
   const [date, setDate] = useState<DateString | null>(null);
 
-  const setDateString = async (date: string) => {
+  const setDateString = (date: string) => {
     storage.setItem("sync:wallpaperDate", date);
     setDate(date);
   };
@@ -79,7 +79,7 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   const currentWallpaper = wallpapers[date];
 
   return (
-    <div className="absolute inset-0">
+    <div className="relative w-full h-full">
       {currentWallpaper && (
         <>
           <img
@@ -88,7 +88,7 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
             alt={currentWallpaper.copyright}
           />
           <div>
-            <div className="absolute bottom-0 right-0 p-4 bg-opacity-50 text-white text-right [text-shadow:_0_0_4px_rgb(0_0_0)]">
+            <div className="absolute bottom-0 right-4 p-4 opacity-80 text-white text-right [text-shadow:_0_0_4px_rgb(0_0_0)]">
               <a
                 href={currentWallpaper.copyrightlink}
                 target="_blank"

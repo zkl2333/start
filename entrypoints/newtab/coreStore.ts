@@ -1,11 +1,13 @@
 import { create } from "zustand";
+import { storage } from "wxt/storage";
 
 interface IFeature {
   id: string;
   name: string;
   enabled: boolean;
   contextMenus?: MenuItem[];
-  render: () => JSX.Element;
+  render?: () => JSX.Element;
+  content?: () => JSX.Element;
 }
 
 interface ICoreStore {
@@ -16,7 +18,13 @@ interface ICoreStore {
   disableFeature: (id: string) => void;
 }
 
-export const createFeature = (feature: IFeature) => feature;
+export const createFeature = (feature: IFeature) => {
+  storage.getItem<boolean>(`sync:feature:${feature.id}`).then((enabled) => {
+    feature.enabled = enabled ?? feature.enabled;
+  });
+
+  return feature;
+};
 
 export const useCoreStore = create<ICoreStore>()((set, get) => ({
   features: [] as IFeature[],
@@ -36,7 +44,7 @@ export const useCoreStore = create<ICoreStore>()((set, get) => ({
     });
   },
   enableFeature: (id) => {
-    console.log("enableFeature", id);
+    storage.setItem(`sync:feature:${id}`, true);
     return set((state) => ({
       features: state.features.map((feature) =>
         feature.id === id ? { ...feature, enabled: true } : feature
@@ -44,7 +52,7 @@ export const useCoreStore = create<ICoreStore>()((set, get) => ({
     }));
   },
   disableFeature: (id) => {
-    console.log("disableFeature", id);
+    storage.setItem(`sync:feature:${id}`, false);
     return set((state) => ({
       features: state.features.map((feature) =>
         feature.id === id ? { ...feature, enabled: false } : feature

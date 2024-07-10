@@ -1,8 +1,10 @@
 import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
 import wallpaperFeature from "./features/wallpaper";
-import historyFeature from "./features/history";
+// import historyFeature from "./features/history";
 import topSitesFeature from "./features/topSites";
 import { useCoreStore } from "./coreStore";
+import customizeNavigation from "./features/customize-navigation";
+import clock from "./features/clock";
 
 const useAllFeatures = () => {
   const coreStore = useCoreStore();
@@ -43,18 +45,27 @@ function APP() {
 
   useEffect(() => {
     coreStore.registerFeature(wallpaperFeature);
-    coreStore.registerFeature(historyFeature);
+    coreStore.registerFeature(clock);
+    // coreStore.registerFeature(historyFeature);
     coreStore.registerFeature(topSitesFeature);
+    coreStore.registerFeature(customizeNavigation);
   }, []);
 
   return (
     <MainContextMenu menuItems={menuItems}>
-      <div className="relative isolate flex min-h-svh w-full flex-col">
-        {coreStore.features
-          .filter((feature) => feature.enabled)
-          .map((feature) => {
-            return <feature.render key={feature.id} />;
+      <div className="relative h-svh w-full">
+        <div className="absolute h-full w-full -z-10">
+          {enabledFeatures.map((feature) => {
+            return feature.render && <feature.render key={feature.id} />;
           })}
+        </div>
+        <div className="absolute h-full w-full flex flex-col overflow-auto">
+          <div className="container">
+            {enabledFeatures.map((feature) => {
+              return feature.content && <feature.content key={feature.id} />;
+            })}
+          </div>
+        </div>
       </div>
     </MainContextMenu>
   );

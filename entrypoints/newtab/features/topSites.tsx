@@ -1,11 +1,16 @@
-import { createFeature } from "../coreStore";
+import NavItem from "@/components/nav-item";
+import { createFeature, useCoreStore } from "../coreStore";
 import { TopSites } from "webextension-polyfill";
 
 const topSitesFeature = createFeature({
   name: "常用网址",
   id: "topSites",
-  enabled: false,
-  render: () => {
+  enabled: true,
+  content: () => {
+    const hasImage = useCoreStore((state) =>
+      state.features.some((f) => f.id === "wallpaper" && f.enabled)
+    );
+
     const [urls, setUrls] = useState<TopSites.MostVisitedURL[]>([]);
 
     const main = async () => {
@@ -35,31 +40,13 @@ const topSitesFeature = createFeature({
       main();
     }, []);
 
-    function faviconURL(u: string) {
-      // @ts-ignore
-      const url = new URL(browser.runtime.getURL("/_favicon/"));
-      url.searchParams.set("pageUrl", u);
-      url.searchParams.set("size", "32");
-      return url.toString();
-    }
-
     return (
-      <div className="absolute isolate flex inset-0 flex-col">
-        <ul className="container mt-[40vh] flex flex-wrap bg-gray-200/50 rounded-md p-4">
+      <div className="p-2">
+        <ul className="flex flex-wrap">
           {urls.map((item) => {
             return (
               <li key={item.url}>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/60 rounded-md w-24 h-24"
-                >
-                  <img src={faviconURL(item.url)} alt="" className="w-12 h-12" />
-                  <div className="text-sm text-gray-800 truncate w-full text-center">
-                    {item.title}
-                  </div>
-                </a>
+                <NavItem url={item.url} title={item.title || ""} />
               </li>
             );
           })}
