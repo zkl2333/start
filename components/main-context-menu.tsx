@@ -26,7 +26,7 @@ export interface MenuItem {
     | "sub"
     | "label"
     | "radioGroup";
-  label?: string;
+  label?: React.ReactNode;
   shortcut?: Array<"meta" | "shift" | "ctrl" | "alt" | string>;
   checked?: boolean;
   value?: string;

@@ -4,9 +4,9 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: {
-    permissions: ["favicon", "storage", "topSites"],
+    permissions: ["favicon", "storage", "topSites", "sidePanel"],
     host_permissions: [],
-    optional_permissions: ["topSites", "history", "bookmarks"],
+    optional_permissions: ["history", "bookmarks"],
     // @ts-ignore
     optional_host_permissions: ["*://*/*"],
   },

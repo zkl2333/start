@@ -22,16 +22,6 @@ const fetchImages = async () => {
   return data;
 };
 
-const getTodayDate = () => {
-  const date = new Date();
-  return (
-    date.getFullYear() +
-    "" +
-    (date.getMonth() + 1).toString().padStart(2, "0") +
-    date.getDate().toString().padStart(2, "0")
-  );
-};
-
 const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   const [wallpapers, setWallpapers] = useState<Record<
     DateString,
@@ -45,16 +35,16 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   };
 
   useEffect(() => {
-    storage.getItem<string>("sync:wallpaperDate").then((date) => {
-      if (date) {
-        setDate(date);
-      } else {
-        setDate(getTodayDate());
-      }
-    });
-
     fetchImages().then((images) => {
       setWallpapers(images);
+      storage.getItem<string>("sync:wallpaperDate").then((date) => {
+        if (date) {
+          setDate(date);
+        } else {
+          const dates = Object.keys(images || {});
+          setDate(dates[dates.length - 1]);
+        }
+      });
     });
   }, []);
 

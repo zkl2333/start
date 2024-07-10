@@ -11,6 +11,23 @@ const useAllFeatures = () => {
   return coreStore.features;
 };
 
+let isSidepanelOpened = false;
+
+browser.runtime.onConnect.addListener((port) => {
+  if (port.name === "mySidepanel") {
+    console.log("Sidepanel opened.");
+    isSidepanelOpened = true;
+    port.onDisconnect.addListener(() => {
+      console.log("Sidepanel closed.");
+      isSidepanelOpened = false;
+    });
+  }
+});
+
+const SidepanelBtn = () => {
+  return isSidepanelOpened ? "关闭侧边栏" : "打开侧边栏";
+};
+
 function APP() {
   const coreStore = useCoreStore();
 
@@ -37,6 +54,37 @@ function APP() {
         },
       } as const;
     }),
+    {
+      type: "separator",
+    },
+    {
+      type: "item",
+      label: <SidepanelBtn />,
+      shortcut: ["alt", "s"],
+      inset: true,
+      onSelect: async () => {
+        const tab = await browser.tabs.getCurrent();
+
+        if (isSidepanelOpened) {
+          // @ts-ignore
+          await browser.sidePanel.setOptions({
+            enabled: false,
+          });
+          return;
+        }
+
+        // @ts-ignore
+        await browser.sidePanel.setOptions({
+          enabled: true,
+          path: "/sidePanel.html",
+        });
+
+        // @ts-ignore
+        await browser.sidePanel.open({
+          tabId: tab.id,
+        });
+      },
+    },
     enabledFeaturesContextMenus.length > 0 && {
       type: "separator",
     },
