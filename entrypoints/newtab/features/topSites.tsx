@@ -7,10 +7,6 @@ const topSitesFeature = createFeature({
   id: "topSites",
   enabled: true,
   content: () => {
-    const hasImage = useCoreStore((state) =>
-      state.features.some((f) => f.id === "wallpaper" && f.enabled)
-    );
-
     const [urls, setUrls] = useState<TopSites.MostVisitedURL[]>([]);
 
     const main = async () => {

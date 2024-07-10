@@ -18,18 +18,17 @@ interface ICoreStore {
   disableFeature: (id: string) => void;
 }
 
-export const createFeature = (feature: IFeature) => {
-  storage.getItem<boolean>(`sync:feature:${feature.id}`).then((enabled) => {
-    feature.enabled = enabled ?? feature.enabled;
-  });
-
-  return feature;
-};
+export const createFeature = (feature: IFeature) => feature;
 
 export const useCoreStore = create<ICoreStore>()((set, get) => ({
   features: [] as IFeature[],
   contextMenus: [] as MenuItem[],
-  registerFeature: (feature) => {
+  registerFeature: async (feature) => {
+    const enabled = await storage.getItem<boolean>(
+      `sync:feature:${feature.id}`
+    );
+    feature.enabled = enabled ?? feature.enabled;
+
     return set((state) => {
       if (state.features.some((f) => f.name === feature.name)) {
         console.log("feature already registered", feature);
