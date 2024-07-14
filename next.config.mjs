@@ -1,8 +1,22 @@
+// @ts-check
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
   images: {
-    domains: ["www.google.com", "www.bing.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.google.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.bing.com",
+      },
+      {
+        hostname: "*",
+      },
+    ],
   },
 };
 

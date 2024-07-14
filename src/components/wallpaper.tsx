@@ -71,12 +71,13 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
     <div className="relative w-full h-full">
       {currentWallpaper && (
         <>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             className="w-full h-full object-cover"
             src={currentWallpaper.url}
             alt={currentWallpaper.copyright}
-            width={3840}
-            height={2160}
+            // width={3840}
+            // height={2160}
           />
           <div>
             <div className="absolute bottom-0 right-4 p-4 opacity-80 text-white text-right [text-shadow:_0_0_4px_rgb(0_0_0)]">
