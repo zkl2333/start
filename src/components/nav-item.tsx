@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
-import { ICardMeta } from "@/app/api/card-meta/route";
+import { ICardMeta } from "@/app/api/site-info/route";
 import { useCoreStore } from "@/app/coreStore";
 import { cn } from "@/lib/utils";
-// import Image from "next/image";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 function faviconURL(u: string) {
@@ -11,6 +10,62 @@ function faviconURL(u: string) {
   url.searchParams.set("size", "32");
   return url.toString();
 }
+
+const IconRenderer = ({
+  cardMeta,
+  url,
+}: {
+  cardMeta: ICardMeta | null;
+  url: string;
+}) => {
+  if (cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed) {
+    return (
+      <Image
+        src={(cardMeta.touchIcons || cardMeta.touchIconsPrecomposed)!}
+        alt=""
+        className="w-full h-full rounded-sm"
+        width={100}
+        height={100}
+      />
+    );
+  }
+  if (
+    cardMeta?.image?.url &&
+    cardMeta?.image?.width === cardMeta?.image?.height
+  ) {
+    return (
+      <Image
+        src={cardMeta.image.url}
+        alt=""
+        className="w-full h-full rounded-sm"
+        width={100}
+        height={100}
+      />
+    );
+  }
+
+  if (cardMeta?.favicon) {
+    return (
+      <Image
+        src={cardMeta.favicon}
+        alt=""
+        width={24}
+        height={24}
+        className="rounded-sm"
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={faviconURL(url)}
+      alt=""
+      width={24}
+      height={24}
+      className="rounded-sm"
+    />
+  );
+};
 
 const NavItem = (item: { url: string; title: string }) => {
   const [cardMeta, setCardMeta] = useState<ICardMeta | null>(null);
@@ -21,19 +76,16 @@ const NavItem = (item: { url: string; title: string }) => {
 
   useEffect(() => {
     const fetchCardMeta = async () => {
-      const res = await fetch(`/api/card-meta?url=${item.url}`);
+      const res = await fetch(`/api/site-info?url=${item.url}`);
       const data = await res.json();
 
-      if (!data.success) {
-        return;
+      if (data.success) {
+        setCardMeta(data.result);
       }
-
-      setCardMeta(data.result);
     };
-    if (!cardMeta) {
-      fetchCardMeta();
-    }
-  }, [setCardMeta, item.url, cardMeta]);
+
+    fetchCardMeta();
+  }, [item.url]);
 
   return (
     <a
@@ -42,42 +94,8 @@ const NavItem = (item: { url: string; title: string }) => {
       rel="noreferrer noopener"
       className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 rounded-md w-24 h-24 p-2"
     >
-      <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-full overflow-hidden">
-        {/* {(cardMeta?.image?.url || cardMeta?.favicon) && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={cardMeta?.image?.url || cardMeta.favicon}
-            alt=""
-            width={24}
-            height={24}
-            className="rounded-sm"
-          />
-        )} */}
-        {cardMeta?.image?.url &&
-        cardMeta?.image?.width &&
-        cardMeta?.image?.width === cardMeta?.image?.height ? (
-          <img
-            src={cardMeta.image.url}
-            alt=""
-            className="w-full h-full rounded-sm"
-          />
-        ) : cardMeta?.favicon ? (
-          <img
-            src={cardMeta.favicon}
-            alt=""
-            width={24}
-            height={24}
-            className="rounded-sm"
-          />
-        ) : (
-          <img
-            src={faviconURL(item.url)}
-            alt=""
-            width={24}
-            height={24}
-            className="rounded-sm"
-          />
-        )}
+      <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
+        <IconRenderer cardMeta={cardMeta} url={item.url} />
       </div>
       <div
         className={cn("text-sm truncate w-full text-center text-gray-800", {

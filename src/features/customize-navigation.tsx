@@ -11,9 +11,7 @@ const Content = () => {
   >([]);
 
   const main = async () => {
-    const res = await fetch(
-      "https://nav.zkl2333.com/index.php?c=api&method=link_list&limit=100"
-    ).then((res) => res.json());
+    const res = await fetch("/api/links").then((res) => res.json());
 
     setUrls(res.data);
   };

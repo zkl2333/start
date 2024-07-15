@@ -4,7 +4,7 @@ import path from "path";
 import YAML from "yaml";
 
 // 数据文件路径
-const dataFilePath = path.join(process.cwd(), "data", "links.yaml");
+const dataFilePath = path.join(process.cwd(), "data/storge", "links.yaml");
 
 // 读取数据
 async function readData() {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   }
 
   const links = await readData();
-  links.push({ url, title, id: uuidv4() });
+  links.push({ id: uuidv4(), url, title });
   await writeData(links);
 
   return new Response(

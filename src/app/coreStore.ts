@@ -20,22 +20,17 @@ interface ICoreStore {
 
 export const createFeature = (feature: IFeature) => feature;
 
-export const useCoreStore = create<ICoreStore>()((set, get) => ({
+export const useCoreStore = create<ICoreStore>()((set) => ({
   features: [] as IFeature[],
   contextMenus: [] as MenuItem[],
   registerFeature: async (feature) => {
-    // const enabled = await storage.getItem<boolean>(
-    //   `sync:feature:${feature.id}`
-    // );
-    // feature.enabled = enabled ?? feature.enabled;
+    const enabled = localStorage.getItem(`feature:${feature.id}`);
+    feature.enabled = enabled ? enabled === "true" : feature.enabled;
 
     return set((state) => {
       if (state.features.some((f) => f.name === feature.name)) {
-        console.log("feature already registered", feature);
         return state;
       }
-
-      console.log("registerFeature", feature);
 
       return {
         features: [...state.features, feature],
@@ -43,7 +38,7 @@ export const useCoreStore = create<ICoreStore>()((set, get) => ({
     });
   },
   enableFeature: (id) => {
-    // storage.setItem(`sync:feature:${id}`, true);
+    localStorage.setItem(`feature:${id}`, "true");
     return set((state) => ({
       features: state.features.map((feature) =>
         feature.id === id ? { ...feature, enabled: true } : feature
@@ -51,7 +46,7 @@ export const useCoreStore = create<ICoreStore>()((set, get) => ({
     }));
   },
   disableFeature: (id) => {
-    // storage.setItem(`sync:feature:${id}`, false);
+    localStorage.setItem(`feature:${id}`, "false");
     return set((state) => ({
       features: state.features.map((feature) =>
         feature.id === id ? { ...feature, enabled: false } : feature

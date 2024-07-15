@@ -1,4 +1,5 @@
 import ogs, { ErrorResult, SuccessResult } from "open-graph-scraper";
+import * as cheerio from "cheerio";
 
 const userAgent =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
@@ -7,10 +8,25 @@ export interface ICardMeta {
   title: string;
   description: string;
   url: string;
-  images?: SuccessResult["result"]["ogImage"];
+  ogImage?: SuccessResult["result"]["ogImage"];
+  twitterImage?: SuccessResult["result"]["twitterImage"];
   image?: { url: string; width?: number; height?: number };
   favicon: string;
+  touchIcons?: string;
+  touchIconsPrecomposed?: string;
 }
+
+// 获取网站的 apple-touch-icon apple-touch-icon-precomposed
+const getAppleTouchIcon = (html: string) => {
+  const $ = cheerio.load(html);
+  const touchIcons = $("link[rel='apple-touch-icon']");
+  const touchIconsPrecomposed = $("link[rel='apple-touch-icon-precomposed']");
+
+  return {
+    touchIcons: touchIcons.attr("href"),
+    touchIconsPrecomposed: touchIconsPrecomposed.attr("href"),
+  };
+};
 
 // 拼接相对路径
 const joinPath = (base: string, path = "favicon.ico") => {
@@ -61,18 +77,22 @@ const getBestImage = (images: SuccessResult["result"]["ogImage"]) => {
   });
 };
 
-const createCardMeta = (
-  requestUrl: string,
-  data: SuccessResult["result"]
-): ICardMeta => {
-  const image = getBestImage(data.ogImage || data.twitterImage);
+const createCardMeta = (requestUrl: string, data: SuccessResult): ICardMeta => {
+  const result = data.result;
+  const image = getBestImage(result.ogImage || result.twitterImage);
+
+  const { touchIcons, touchIconsPrecomposed } = getAppleTouchIcon(data.html);
 
   return {
-    title: data.ogTitle || data.twitterTitle || data.dcTitle || "",
+    title: result.ogTitle || result.twitterTitle || result.dcTitle || "",
     description:
-      data.ogDescription || data.twitterDescription || data.dcDescription || "",
+      result.ogDescription ||
+      result.twitterDescription ||
+      result.dcDescription ||
+      "",
     url: requestUrl,
-    images: data.ogImage || data.twitterImage,
+    ogImage: result.ogImage,
+    twitterImage: result.twitterImage,
     image: image
       ? {
           ...image,
@@ -81,9 +101,11 @@ const createCardMeta = (
             : joinPath(requestUrl, image.url),
         }
       : undefined,
-    favicon: isAbsolute(data.favicon)
-      ? data.favicon!
-      : joinPath(requestUrl, data.favicon),
+    favicon: isAbsolute(result.favicon)
+      ? result.favicon!
+      : joinPath(requestUrl, result.favicon),
+    touchIcons: touchIcons,
+    touchIconsPrecomposed: touchIconsPrecomposed,
   };
 };
 
@@ -106,11 +128,11 @@ export async function GET(request: Request) {
   try {
     const data = await ogs(options);
 
-    if (data.result.success) {
+    if (!data.error) {
       return Response.json(
         {
           success: true,
-          result: createCardMeta(url, data.result),
+          result: createCardMeta(url, data),
         },
         {
           headers: {

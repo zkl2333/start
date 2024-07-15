@@ -1,0 +1,12 @@
+- id: e6862737-f94b-4adc-b1b8-ddbdf932f334
+  url: https://www.baidu.com
+  title: 百度
+- id: 91fe9e90-cedf-428b-bafb-abbe4991c77c
+  url: https://www.google.com
+  title: 谷歌
+- id: 4f6c0f80-26a3-4bde-b56d-f107c2460bb8
+  url: https://www.bilibili.com/
+  title: bilibili
+- id: 73addab1-8764-4646-8bfd-5d912a55ab4a
+  url: https://github.com/
+  title: github
