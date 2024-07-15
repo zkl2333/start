@@ -40,6 +40,15 @@ export default function Home() {
     {
       type: "separator",
     },
+    {
+      type: "item",
+      label: "刷新",
+      inset: true,
+      shortcut: ["ctrl", "r"],
+      onSelect: () => {
+        window.location.reload();
+      },
+    },
     enabledFeaturesContextMenus.length > 0 && {
       type: "separator",
     },
