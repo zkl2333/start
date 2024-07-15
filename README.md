@@ -1,6 +1,7 @@
 # 这是一个自部署的网址导航和简单的应用程序仪表板
 
 ## 基于 Docker Comopnent 部署
+
 ```yaml
 version: "3"
 services:
@@ -9,7 +10,7 @@ services:
       - "3000:3000"
     volumes:
       - ./docker-data:/app/data
-    image: ghcr.io/zkl2333/start:next
+    image: ghcr.io/zkl2333/start:main
 ```
 
 ## 开发
