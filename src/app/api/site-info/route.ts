@@ -1,4 +1,5 @@
 import ogs, { ErrorResult, SuccessResult } from "open-graph-scraper";
+import { resolve } from "url";
 import * as cheerio from "cheerio";
 
 const userAgent =
@@ -14,25 +15,30 @@ export interface ICardMeta {
   favicon: string;
   touchIcons?: string;
   touchIconsPrecomposed?: string;
+  itempropImage?: string;
 }
 
-// 获取网站的 apple-touch-icon apple-touch-icon-precomposed
-const getAppleTouchIcon = (html: string) => {
+// 获取网站的 apple-touch-icon apple-touch-icon-precomposed itemprop="image"
+const getMoreIcon = (html: string) => {
   const $ = cheerio.load(html);
   const touchIcons = $("link[rel='apple-touch-icon']");
   const touchIconsPrecomposed = $("link[rel='apple-touch-icon-precomposed']");
+  const itempropImage = $("meta[itemprop='image']");
 
   return {
     touchIcons: touchIcons.attr("href"),
     touchIconsPrecomposed: touchIconsPrecomposed.attr("href"),
+    itempropImage: itempropImage.attr("content"),
   };
 };
 
 // 拼接相对路径
-const joinPath = (base: string, path = "favicon.ico") => {
-  const url = new URL(base);
-  url.pathname = path;
-  return url.toString();
+const joinPath = (base: string, path?: string) => {
+  if (!path) {
+    return "";
+  }
+
+  return resolve(base, path);
 };
 
 // 判断是否为绝对路径
@@ -81,7 +87,9 @@ const createCardMeta = (requestUrl: string, data: SuccessResult): ICardMeta => {
   const result = data.result;
   const image = getBestImage(result.ogImage || result.twitterImage);
 
-  const { touchIcons, touchIconsPrecomposed } = getAppleTouchIcon(data.html);
+  const { touchIcons, touchIconsPrecomposed, itempropImage } = getMoreIcon(
+    data.html
+  );
 
   return {
     title: result.ogTitle || result.twitterTitle || result.dcTitle || "",
@@ -104,8 +112,15 @@ const createCardMeta = (requestUrl: string, data: SuccessResult): ICardMeta => {
     favicon: isAbsolute(result.favicon)
       ? result.favicon!
       : joinPath(requestUrl, result.favicon),
-    touchIcons: touchIcons,
-    touchIconsPrecomposed: touchIconsPrecomposed,
+    touchIcons: isAbsolute(touchIcons)
+      ? touchIcons
+      : joinPath(requestUrl, touchIcons),
+    touchIconsPrecomposed: isAbsolute(touchIconsPrecomposed)
+      ? touchIconsPrecomposed
+      : joinPath(requestUrl, touchIconsPrecomposed),
+    itempropImage: isAbsolute(itempropImage)
+      ? itempropImage
+      : joinPath(requestUrl, itempropImage),
   };
 };
 

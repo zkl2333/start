@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
@@ -14,9 +16,6 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import React, { useEffect } from "react";
-
-// const isMac = /macintosh|mac os x/i.test(navigator?.userAgent || "");
-const isMac = false;
 
 export interface MenuItem {
   type:
@@ -37,7 +36,7 @@ export interface MenuItem {
   onSelect?: () => void;
 }
 
-const renderMenuItems = (items: MenuItem[]) => {
+const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
   return items.map((item, index) => {
     const shortcut = item.shortcut
       ?.map((key) => {
@@ -95,7 +94,7 @@ const renderMenuItems = (items: MenuItem[]) => {
               {item.label}
             </ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48">
-              {renderMenuItems(item.children!)}
+              {renderMenuItems(item.children!, isMac)}
             </ContextMenuSubContent>
           </ContextMenuSub>
         );
@@ -110,7 +109,7 @@ const renderMenuItems = (items: MenuItem[]) => {
           <ContextMenuRadioGroup key={index} value={item.value!}>
             <ContextMenuLabel inset>{item.label}</ContextMenuLabel>
             <ContextMenuSeparator />
-            {renderMenuItems(item.children!)}
+            {renderMenuItems(item.children!, isMac)}
           </ContextMenuRadioGroup>
         );
       default:
@@ -126,6 +125,12 @@ const MainContextMenu = ({
   children: React.ReactNode;
   menuItems: MenuItem[];
 }) => {
+  const [isMac, setIsMac] = React.useState(false);
+
+  useEffect(() => {
+    setIsMac(/macintosh|mac os x/i.test(navigator?.userAgent || ""));
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const { metaKey, shiftKey, ctrlKey, altKey, key } = event;
@@ -171,7 +176,7 @@ const MainContextMenu = ({
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        {renderMenuItems(menuItems)}
+        {renderMenuItems(menuItems, isMac)}
       </ContextMenuContent>
     </ContextMenu>
   );

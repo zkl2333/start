@@ -31,6 +31,7 @@ const IconRenderer = ({
   }
   if (
     cardMeta?.image?.url &&
+    cardMeta?.image?.width &&
     cardMeta?.image?.width === cardMeta?.image?.height
   ) {
     return (
@@ -44,14 +45,14 @@ const IconRenderer = ({
     );
   }
 
-  if (cardMeta?.favicon) {
+  if (cardMeta?.favicon || cardMeta?.itempropImage) {
     return (
       <Image
-        src={cardMeta.favicon}
+        src={cardMeta.favicon || cardMeta.itempropImage!}
         alt=""
         width={24}
         height={24}
-        className="rounded-sm"
+        className="w-5 h-5 rounded-sm"
       />
     );
   }
@@ -62,12 +63,17 @@ const IconRenderer = ({
       alt=""
       width={24}
       height={24}
-      className="rounded-sm"
+      className="w-5 h-5 rounded-sm"
     />
   );
 };
 
-const NavItem = (item: { url: string; title: string }) => {
+const NavItem = (item: {
+  url?: string;
+  title: string;
+  icon?: React.ReactNode;
+  onClick?: () => void;
+}) => {
   const [cardMeta, setCardMeta] = useState<ICardMeta | null>(null);
 
   const hasImage = useCoreStore((state) =>
@@ -84,18 +90,22 @@ const NavItem = (item: { url: string; title: string }) => {
       }
     };
 
-    fetchCardMeta();
+    item.url && fetchCardMeta();
   }, [item.url]);
 
   return (
     <a
       href={item.url}
+      onClick={item.onClick}
       target="_blank"
       rel="noreferrer noopener"
-      className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 rounded-md w-24 h-24 p-2"
+      className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-md w-24 h-24 p-2 cursor-pointer"
     >
       <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
-        <IconRenderer cardMeta={cardMeta} url={item.url} />
+        {item.icon && item.icon}
+        {!item.icon && item.url && (
+          <IconRenderer cardMeta={cardMeta} url={item.url} />
+        )}
       </div>
       <div
         className={cn("text-sm truncate w-full text-center text-gray-800", {
