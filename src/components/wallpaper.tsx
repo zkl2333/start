@@ -1,11 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Image from "next/image";
-
-interface WallpaperItem {
-  url: string;
-  copyright: string;
-  copyrightlink: string;
-}
+import { fetchImages, WallpaperItem } from "./actions";
 
 type DateString = string;
 
@@ -13,14 +8,6 @@ export interface WallpaperRef {
   next: () => void;
   prev: () => void;
 }
-
-const fetchImages = async () => {
-  const res = await fetch(
-    "https://cdn.jsdelivr.net/gh/asvow/bing-wallpaper@main/bing.json"
-  );
-  const data = (await res.json()) as Record<string, WallpaperItem>;
-  return data;
-};
 
 const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   const [wallpapers, setWallpapers] = useState<Record<
@@ -71,13 +58,11 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
     <div className="relative w-full h-full">
       {currentWallpaper && (
         <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             className="w-full h-full object-cover"
             src={currentWallpaper.url}
             alt={currentWallpaper.copyright}
-            // width={3840}
-            // height={2160}
+            fill={true}
           />
           <div className="bg-gray-700/30 absolute inset-0">
             <div className="absolute bottom-0 right-4 p-4 opacity-80 text-white text-right [text-shadow:_0_0_4px_rgb(0_0_0)]">

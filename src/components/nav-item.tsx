@@ -81,7 +81,7 @@ const NavItem = (item: {
   );
 
   useEffect(() => {
-    const fetchCardMeta = async () => {
+    const fetchCardMeta = async (url: string) => {
       const res = await fetch(`/api/site-info?url=${item.url}`);
       const data = await res.json();
 
@@ -90,7 +90,7 @@ const NavItem = (item: {
       }
     };
 
-    item.url && fetchCardMeta();
+    item.url && fetchCardMeta(item.url);
   }, [item.url]);
 
   return (
