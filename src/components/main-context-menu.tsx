@@ -149,6 +149,9 @@ const MainContextMenu = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      event.stopPropagation();
+      event.preventDefault();
+
       const { metaKey, shiftKey, ctrlKey, altKey, key } = event;
 
       const checkShortcut = (item: MenuItem) => {
