@@ -1,5 +1,6 @@
-import { createFeature, useCoreStore } from "@/app/coreStore";
 import { cn } from "@/lib/utils";
+import { useCoreStore } from "@/providers/core-store-provider";
+import { createFeature } from "@/stores/core-store";
 import { useState, useEffect } from "react";
 
 const getTime = () => {

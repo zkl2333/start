@@ -1,18 +1,17 @@
 "use client";
 import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
-import { useCoreStore } from "./coreStore";
 import clock from "@/features/clock";
 import customizeNavigation from "@/features/customize-navigation";
 import wallpaperFeature from "@/features/wallpaper";
+import { useCoreStore } from "@/providers/core-store-provider";
 import { useEffect } from "react";
 
 const useAllFeatures = () => {
-  const coreStore = useCoreStore();
-  return coreStore.features;
+  return useCoreStore((state) => state.features);
 };
 
 export default function Home() {
-  const coreStore = useCoreStore();
+  const coreStore = useCoreStore((state) => state);
 
   const allFeatures = useAllFeatures();
   const enabledFeatures = coreStore.features.filter(

@@ -1,6 +1,6 @@
 import { ICardMeta } from "@/app/api/site-info/route";
-import { useCoreStore } from "@/app/coreStore";
 import { cn } from "@/lib/utils";
+import { useCoreStore } from "@/providers/core-store-provider";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

@@ -1,6 +1,6 @@
-import { createFeature } from "@/app/coreStore";
 import Wallpaper, { WallpaperRef } from "@/components/wallpaper";
 import { createEventBus } from "@/lib/utils";
+import { createFeature } from "@/stores/core-store";
 import { useRef, useEffect } from "react";
 
 const eventBus = createEventBus();

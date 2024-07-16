@@ -1,4 +1,4 @@
-import { createFeature } from "@/app/coreStore";
+import { createFeature } from "@/stores/core-store";
 import { Content } from "./content";
 
 const customizeNavigation = createFeature({
