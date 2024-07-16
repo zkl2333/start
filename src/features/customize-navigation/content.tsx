@@ -35,7 +35,7 @@ export const Content = ({
     {
       type: "checkbox",
       label: "编辑模式",
-      shortcut: ["alt", "e"],
+      shortcut: ["alt", "s"],
       checked: isEditing,
       onSelect: () => {
         setIsEditing(!isEditing);
@@ -44,7 +44,7 @@ export const Content = ({
     {
       type: "checkbox",
       label: "内网模式",
-      shortcut: ["alt", "a"],
+      shortcut: ["alt", "z"],
       inset: true,
       checked: isIntranet,
       onSelect: () => {
