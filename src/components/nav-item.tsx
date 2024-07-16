@@ -109,17 +109,17 @@ const NavItem = (item: {
       onClick={item.onClick}
       target="_blank"
       rel="noreferrer noopener"
-      className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-md w-24 h-24 p-2 cursor-pointer"
+      className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl w-24 h-24 p-2 cursor-pointer"
     >
-      {cardMeta?.touchIconsPrecomposed ? (
-        <div className="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
+      {cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed ? (
+        <div className="w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden">
           {item.icon && item.icon}
           {!item.icon && item.url && (
             <IconRenderer cardMeta={cardMeta} url={item.url} />
           )}
         </div>
       ) : (
-        <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
+        <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden">
           {item.icon && item.icon}
           {!item.icon && item.url && (
             <IconRenderer cardMeta={cardMeta} url={item.url} />

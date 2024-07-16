@@ -34,3 +34,39 @@
 - id: 902390c7-6e27-487c-a779-f42f96cb5b94
   url: https://medium.com/
   title: medium
+- id: ff70bc39-b84a-4a2e-a553-b2a3a890b636
+  url: https://bbs.nga.cn/
+  title: nga
+- id: 2e7c05d9-25ec-48a6-840d-25b409f6d9d2
+  url: https://mp.weixin.qq.com/
+  title: 微信开放平台
+- id: eca9f66a-8c3b-4112-a9d4-e323ec13db8f
+  url: https://developer.apple.com/documentation/swiftui
+  title: swiftui
+- id: 19b2e697-050c-459e-8b94-430f816e167e
+  url: https://www.iconfont.cn/
+  title: iconfont
+- id: 2b4c0a4d-4f1b-4bc2-bf33-d5cdbad226c5
+  url: https://segmentfault.com/
+  title: segmentfault
+- id: 41b02f03-c4e9-409e-a30d-6b9afd8db531
+  url: https://v2ex.com/
+  title: v2ex
+- id: ce160853-deea-4ff1-9352-7679656a46fb
+  url: https://fonts.google.com/
+  title: google fonts
+- id: bf53036d-2ff7-44cc-8cc0-47dc9e627600
+  url: https://juejin.cn/
+  title: 掘金
+- id: 487c8998-29e0-4e49-960b-6d5bea4f6e8a
+  url: https://fishpi.cn/
+  title: 摸鱼派
+- id: 6a1b89d5-b1b3-4f77-893d-6e779a617761
+  url: https://open.taobao.com/
+  title: 淘宝开放平台
+- id: 9b5e40aa-2b89-4f85-85ee-689dab0447bd
+  url: https://rustwiki.org/docs/
+  title: rustwiki
+- id: 7648064f-8333-42ac-a298-c93476eaac6f
+  url: https://makerworld.com/zh
+  title: makerworld
