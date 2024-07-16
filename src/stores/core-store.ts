@@ -9,17 +9,19 @@ interface IFeature {
   render?: () => JSX.Element;
   content?: ({
     globalMenuItems,
+    updateMenuItem,
   }: {
     globalMenuItems: MenuItem[];
+    updateMenuItem: (id: string, contextMenu: MenuItem) => void;
   }) => JSX.Element;
 }
 
 export interface ICoreStore {
   features: IFeature[];
-  contextMenus: MenuItem[];
   registerFeature: (feature: IFeature) => void;
   enableFeature: (id: string) => void;
   disableFeature: (id: string) => void;
+  updateContextMenu: (id: string, contextMenu: MenuItem) => void;
 }
 
 export const createFeature = (feature: IFeature) => feature;
@@ -27,7 +29,6 @@ export const createFeature = (feature: IFeature) => feature;
 export const createCoreStore = () => {
   return createStore<ICoreStore>()((set, get) => ({
     features: [] as IFeature[],
-    contextMenus: [] as MenuItem[],
     registerFeature: async (feature) => {
       const enabled = localStorage.getItem(`feature:${feature.id}`);
       feature.enabled = enabled ? enabled === "true" : feature.enabled;
@@ -44,23 +45,11 @@ export const createCoreStore = () => {
     },
     enableFeature: (id) => {
       localStorage.setItem(`feature:${id}`, "true");
-
-      const feature = get().features.find((f) => f.id === id);
-
-      if (feature) {
-        if (feature.contextMenus) {
-          // const contextMenuStore = useContextMenuStore.getState();
-          // feature.contextMenus.forEach((menu) => {
-          //   // contextMenuStore.addContextMenu(menu);
-          // });
-        }
-
-        set((state) => ({
-          features: state.features.map((f) =>
-            f.id === id ? { ...f, enabled: true } : f
-          ),
-        }));
-      }
+      set((state) => ({
+        features: state.features.map((f) =>
+          f.id === id ? { ...f, enabled: true } : f
+        ),
+      }));
     },
     disableFeature: (id) => {
       localStorage.setItem(`feature:${id}`, "false");
@@ -68,6 +57,29 @@ export const createCoreStore = () => {
         features: state.features.map((feature) =>
           feature.id === id ? { ...feature, enabled: false } : feature
         ),
+      }));
+    },
+    updateContextMenu: (id: MenuItem["id"], contextMenu: MenuItem) => {
+      set((state) => ({
+        features: state.features.map((feature) => {
+          if (feature.contextMenus) {
+            return {
+              ...feature,
+              contextMenus: feature.contextMenus.map((item) => {
+                if (item.children) {
+                  return {
+                    ...item,
+                    children: item.children.map((child) =>
+                      child.id === id ? contextMenu : child
+                    ),
+                  };
+                }
+                return item.id === id ? contextMenu : item;
+              }),
+            };
+          }
+          return feature;
+        }),
       }));
     },
   }));

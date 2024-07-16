@@ -6,6 +6,32 @@ const customizeNavigation = createFeature({
   id: "customizeNavigation",
   enabled: true,
   content: Content,
+  contextMenus: [
+    {
+      id: "customizeNavigationEditingMode",
+      type: "checkbox",
+      label: "编辑模式",
+      shortcut: ["alt", "s"],
+      checked: false,
+      onSelect: (_, item) => {
+        return {
+          checked: !item.checked,
+        };
+      },
+    },
+    {
+      id: "customizeNavigationIntranetMode",
+      type: "checkbox",
+      label: "内网模式",
+      inset: true,
+      checked: true,
+      onSelect: (_, item) => {
+        return {
+          checked: !item.checked,
+        };
+      },
+    },
+  ],
 });
 
 export default customizeNavigation;

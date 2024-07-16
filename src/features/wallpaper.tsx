@@ -35,6 +35,7 @@ const wallpaperFeature = createFeature({
   enabled: true,
   contextMenus: [
     {
+      id: "wallpaperPrev",
       type: "item",
       label: "上一张壁纸",
       shortcut: ["alt", "["],
@@ -42,6 +43,7 @@ const wallpaperFeature = createFeature({
       onSelect: () => eventBus.emit("prev"),
     },
     {
+      id: "wallpaperNext",
       type: "item",
       label: "下一张壁纸",
       shortcut: ["alt", "]"],

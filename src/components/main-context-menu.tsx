@@ -33,6 +33,7 @@ import {
 import React, { useEffect } from "react";
 
 export interface MenuItem {
+  id?: string;
   type:
     | "item"
     | "checkbox"
@@ -49,10 +50,36 @@ export interface MenuItem {
   children?: MenuItem[];
   disabled?: boolean;
   inset?: boolean;
-  onSelect?: () => void;
+  onSelect?: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent> | Event,
+    item: MenuItem
+  ) => Partial<MenuItem> | void;
 }
 
-const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
+export const getContextMenu = (
+  id: MenuItem["id"],
+  contextMenus: MenuItem[]
+) => {
+  for (const contextMenu of contextMenus) {
+    if (contextMenu.id === id) {
+      return contextMenu;
+    }
+
+    if (contextMenu.children) {
+      for (const child of contextMenu.children) {
+        if (child.id === id) {
+          return child;
+        }
+      }
+    }
+  }
+};
+
+const renderMenuItems = (
+  items: MenuItem[],
+  isMac: boolean,
+  updateMenuItem?: (menuItem: MenuItem) => void
+) => {
   return items.map((item, index) => {
     const shortcut = item.shortcut
       ?.map((key) => {
@@ -78,7 +105,7 @@ const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
             key={index}
             inset={item.inset}
             disabled={item.disabled}
-            onSelect={item.onSelect}
+            onClick={(e) => item?.onSelect && item.onSelect(e, item)}
           >
             {item.label}
             {shortcut && <ContextMenuShortcut>{shortcut}</ContextMenuShortcut>}
@@ -89,7 +116,18 @@ const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
           <ContextMenuCheckboxItem
             key={index}
             checked={item.checked}
-            onSelect={item.onSelect}
+            onSelect={(e) => {
+              if (item?.onSelect) {
+                const res = item.onSelect(e, item);
+                if (res) {
+                  updateMenuItem &&
+                    updateMenuItem({
+                      ...item,
+                      ...res,
+                    });
+                }
+              }
+            }}
           >
             {item.label}
             {shortcut && <ContextMenuShortcut>{shortcut}</ContextMenuShortcut>}
@@ -110,7 +148,7 @@ const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
               {item.label}
             </ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48">
-              {renderMenuItems(item.children!, isMac)}
+              {renderMenuItems(item.children!, isMac, updateMenuItem)}
             </ContextMenuSubContent>
           </ContextMenuSub>
         );
@@ -125,7 +163,7 @@ const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
           <ContextMenuRadioGroup key={index} value={item.value!}>
             <ContextMenuLabel inset>{item.label}</ContextMenuLabel>
             <ContextMenuSeparator />
-            {renderMenuItems(item.children!, isMac)}
+            {renderMenuItems(item.children!, isMac, updateMenuItem)}
           </ContextMenuRadioGroup>
         );
       default:
@@ -137,9 +175,11 @@ const renderMenuItems = (items: MenuItem[], isMac: boolean) => {
 const MainContextMenu = ({
   children,
   menuItems,
+  updateMenuItem,
 }: {
   children: React.ReactNode;
   menuItems: MenuItem[];
+  updateMenuItem?: (menuItem: MenuItem) => void;
 }) => {
   const [isMac, setIsMac] = React.useState(false);
 
@@ -172,7 +212,7 @@ const MainContextMenu = ({
             k?.toLowerCase() === key.toLowerCase()
           ) {
             debounce(() => {
-              item.onSelect && item.onSelect();
+              item.onSelect && item.onSelect(event, item);
             }, 100)();
           }
         }
@@ -190,13 +230,13 @@ const MainContextMenu = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [menuItems]);
+  }, [menuItems, updateMenuItem]);
 
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-64">
-        {renderMenuItems(menuItems, isMac)}
+        {renderMenuItems(menuItems, isMac, updateMenuItem)}
       </ContextMenuContent>
     </ContextMenu>
   );

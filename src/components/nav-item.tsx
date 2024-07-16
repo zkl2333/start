@@ -79,8 +79,9 @@ const IconRenderer = ({
 };
 
 const NavItem = (item: {
-  url?: string;
   title: string;
+  isEditing: boolean;
+  url?: string;
   icon?: React.ReactNode;
   onClick?: () => void;
 }) => {
@@ -109,7 +110,12 @@ const NavItem = (item: {
       onClick={item.onClick}
       target="_blank"
       rel="noreferrer noopener"
-      className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl w-24 h-24 p-2 cursor-pointer"
+      className={cn(
+        "flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl w-24 h-24 p-2 cursor-pointer",
+        {
+          "animate-wiggle": item.isEditing,
+        }
+      )}
     >
       {cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed ? (
         <div className="w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden">

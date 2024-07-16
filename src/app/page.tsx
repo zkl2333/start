@@ -61,7 +61,12 @@ export default function Home() {
   }, [coreStore]);
 
   return (
-    <MainContextMenu menuItems={menuItems}>
+    <MainContextMenu
+      menuItems={menuItems}
+      updateMenuItem={(menuItem) => {
+        menuItem.id && coreStore.updateContextMenu(menuItem.id, menuItem);
+      }}
+    >
       <div className="h-svh w-full">
         <div className="absolute inset-0 h-full w-full -z-10">
           {enabledFeatures.map((feature) => {
@@ -76,6 +81,7 @@ export default function Home() {
                   <feature.content
                     key={feature.id}
                     globalMenuItems={menuItems}
+                    updateMenuItem={coreStore.updateContextMenu}
                   />
                 )
               );

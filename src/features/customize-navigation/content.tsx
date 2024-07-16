@@ -1,12 +1,18 @@
-import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
+import MainContextMenu, {
+  getContextMenu,
+  MenuItem,
+} from "@/components/main-context-menu";
 import NavItem from "@/components/nav-item";
 import { useState, useEffect } from "react";
 import AddLinkBtn from "./addDialog";
+import { cn } from "@/lib/utils";
 
 export const Content = ({
   globalMenuItems,
+  updateMenuItem,
 }: {
   globalMenuItems: MenuItem[];
+  updateMenuItem: (id: string, contextMenu: MenuItem) => void;
 }) => {
   const [urls, setUrls] = useState<
     {
@@ -27,71 +33,68 @@ export const Content = ({
   }, []);
 
   // 是否编辑模式
-  const [isEditing, setIsEditing] = useState(false);
-  // 内网模式
-  const [isIntranet, setIsIntranet] = useState(false);
-
-  const menuItems = [
-    {
-      type: "checkbox",
-      label: "编辑模式",
-      shortcut: ["alt", "s"],
-      checked: isEditing,
-      onSelect: () => {
-        setIsEditing(!isEditing);
-      },
-    },
-    {
-      type: "checkbox",
-      label: "内网模式",
-      shortcut: ["alt", "z"],
-      inset: true,
-      checked: isIntranet,
-      onSelect: () => {
-        setIsIntranet(!isIntranet);
-      },
-    },
-    {
-      type: "separator",
-    },
-    ...globalMenuItems,
-  ] as MenuItem[];
+  const isEditing = !!getContextMenu(
+    "customizeNavigationEditingMode",
+    globalMenuItems
+  )?.checked;
 
   return (
-    <div className="p-2 min-h-[19rem]">
-      <MainContextMenu menuItems={menuItems}>
-        <ul className="flex flex-wrap justify-center">
-          {urls.map((item) => {
-            return (
-              <li key={item.url}>
-                <MainContextMenu
-                  menuItems={[
-                    {
-                      type: "item",
-                      label: "删除",
-                      inset: true,
-                      onSelect: async () => {
-                        await fetch(`/api/links?id=${item.id}`, {
-                          method: "DELETE",
-                        });
+    <div
+      className={cn("p-2 min-h-[19rem]", {
+        "bg-gray-100/20 rounded-3xl": isEditing,
+      })}
+    >
+      <ul className="flex flex-wrap justify-center">
+        {urls.map((item) => {
+          return (
+            <li key={item.url}>
+              <MainContextMenu
+                menuItems={[
+                  {
+                    type: "item",
+                    label: "删除",
+                    inset: true,
+                    onSelect: () => {
+                      fetch(`/api/links/${item.id}`, {
+                        method: "DELETE",
+                      }).then(() => {
                         main();
-                      },
+                      });
                     },
-                    ...menuItems,
-                  ]}
-                >
-                  <NavItem url={item.url} title={item.title || ""} />
-                </MainContextMenu>
-              </li>
-            );
-          })}
-          {isEditing && (
-            <li>
-              <AddLinkBtn onReload={main} />
+                  },
+                  {
+                    type: "item",
+                    label: "编辑",
+                    inset: true,
+                    onSelect: () => {
+                      alert("暂未实现");
+                    },
+                  },
+                  {
+                    type: "separator",
+                  },
+                  ...globalMenuItems,
+                ]}
+                updateMenuItem={(menuItem) =>
+                  menuItem.id && updateMenuItem(menuItem.id, menuItem)
+                }
+              >
+                <NavItem
+                  url={item.url}
+                  title={item.title || ""}
+                  isEditing={isEditing}
+                />
+              </MainContextMenu>
             </li>
-          )}
-        </ul>
-      </MainContextMenu>
+          );
+        })}
+        <li className="w-full"></li>
+        {isEditing && (
+          <li>
+            <AddLinkBtn onReload={main} isEditing={isEditing} />
+          </li>
+        )}
+      </ul>
     </div>
   );
 };

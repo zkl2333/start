@@ -15,14 +15,24 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import NavItem from "@/components/nav-item";
 
-const AddLinkBtn = ({ onReload }: { onReload: () => void }) => {
+const AddLinkBtn = ({
+  onReload,
+  isEditing,
+}: {
+  onReload: () => void;
+  isEditing: boolean;
+}) => {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
 
   return (
     <Dialog>
       <DialogTrigger>
-        <NavItem title="添加" icon={<PlusIcon className="w-6 h-6" />} />
+        <NavItem
+          title="添加"
+          icon={<PlusIcon className="w-6 h-6" />}
+          isEditing={isEditing}
+        />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
