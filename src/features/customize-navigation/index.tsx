@@ -10,7 +10,7 @@ const customizeNavigation = createFeature({
     {
       id: "customizeNavigationEditingMode",
       type: "checkbox",
-      label: "编辑模式",
+      label: "布局模式",
       shortcut: ["alt", "s"],
       checked: false,
       onSelect: (_, item) => {
