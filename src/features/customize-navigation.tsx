@@ -15,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
 
-const Content = () => {
+const Content = ({ globalMenuItems }: { globalMenuItems: MenuItem[] }) => {
   const [urls, setUrls] = useState<
     {
       url: string;
@@ -36,82 +37,106 @@ const Content = () => {
 
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <div className="p-2 min-h-[19rem]">
-      <ul className="flex flex-wrap justify-center">
-        {urls.map((item) => {
-          return (
-            <li key={item.url}>
-              <NavItem url={item.url} title={item.title || ""} />
+      <MainContextMenu
+        menuItems={[
+          {
+            type: "checkbox",
+            label: "编辑模式",
+            shortcut: ["alt", "e"],
+            checked: isEditing,
+            onSelect: () => {
+              setIsEditing(!isEditing);
+            },
+          },
+          {
+            type: "separator",
+          },
+          ...globalMenuItems,
+        ]}
+      >
+        <ul className="flex flex-wrap justify-center">
+          {urls.map((item) => {
+            return (
+              <li key={item.url}>
+                <NavItem url={item.url} title={item.title || ""} />
+              </li>
+            );
+          })}
+          {isEditing && (
+            <li>
+              <Dialog>
+                <DialogTrigger>
+                  <NavItem
+                    title="添加"
+                    icon={<PlusIcon className="w-6 h-6" />}
+                  />
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>添加链接</DialogTitle>
+                    <DialogDescription>
+                      添加一个新的链接到你的导航
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-5 items-center gap-4">
+                      <Label htmlFor="title" className="text-right">
+                        标题
+                      </Label>
+                      <Input
+                        id="title"
+                        className="col-span-4"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-5 items-center gap-4">
+                      <Label htmlFor="url" className="text-right">
+                        网址
+                      </Label>
+                      <Input
+                        id="url"
+                        className="col-span-4"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button
+                        type="submit"
+                        onClick={async () => {
+                          await fetch("/api/links", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              title,
+                              url,
+                            }),
+                          });
+                          main();
+                        }}
+                        onSubmit={async (e) => {
+                          console.log(e);
+                        }}
+                      >
+                        保存
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </li>
-          );
-        })}
-        <li>
-          <Dialog>
-            <DialogTrigger>
-              <NavItem title="添加" icon={<PlusIcon className="w-6 h-6" />} />
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>添加链接</DialogTitle>
-                <DialogDescription>
-                  添加一个新的链接到你的导航
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <Label htmlFor="title" className="text-right">
-                    标题
-                  </Label>
-                  <Input
-                    id="title"
-                    className="col-span-4"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-                <div className="grid grid-cols-5 items-center gap-4">
-                  <Label htmlFor="url" className="text-right">
-                    网址
-                  </Label>
-                  <Input
-                    id="url"
-                    className="col-span-4"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    type="submit"
-                    onClick={async () => {
-                      await fetch("/api/links", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          title,
-                          url,
-                        }),
-                      });
-                      main();
-                    }}
-                    onSubmit={async (e) => {
-                      console.log(e);
-                    }}
-                  >
-                    保存
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </li>
-      </ul>
+          )}
+        </ul>
+      </MainContextMenu>
     </div>
   );
 };

@@ -7,7 +7,11 @@ interface IFeature {
   enabled: boolean;
   contextMenus?: MenuItem[];
   render?: () => JSX.Element;
-  content?: () => JSX.Element;
+  content?: ({
+    globalMenuItems,
+  }: {
+    globalMenuItems: MenuItem[];
+  }) => JSX.Element;
 }
 
 interface ICoreStore {

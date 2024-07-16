@@ -72,7 +72,14 @@ export default function Home() {
         <div className="absolute h-full w-full flex flex-col overflow-auto">
           <div className="container h-full flex flex-col justify-center gap-20">
             {enabledFeatures.map((feature) => {
-              return feature.content && <feature.content key={feature.id} />;
+              return (
+                feature.content && (
+                  <feature.content
+                    key={feature.id}
+                    globalMenuItems={menuItems}
+                  />
+                )
+              );
             })}
           </div>
         </div>
