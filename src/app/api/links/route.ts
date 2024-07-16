@@ -60,8 +60,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const body = await request.json();
-  const { id } = body;
+  const searchParams = new URL(request.url).searchParams;
+  const id = searchParams.get("id");
 
   let links = await readData();
   links = links.filter((item: { id: any }) => item.id !== id);

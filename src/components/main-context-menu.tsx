@@ -1,5 +1,20 @@
 "use client";
 
+// 防抖函数
+function debounce(fn: Function, delay: number) {
+  let timer: number | null = null;
+
+  return function (this: any, ...args: any[]) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = window.setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
@@ -28,6 +43,7 @@ export interface MenuItem {
     | "radioGroup";
   label?: React.ReactNode;
   shortcut?: Array<"meta" | "shift" | "ctrl" | "alt" | string>;
+  disabledShortcut?: boolean;
   checked?: boolean;
   value?: string;
   children?: MenuItem[];
@@ -136,7 +152,7 @@ const MainContextMenu = ({
       const { metaKey, shiftKey, ctrlKey, altKey, key } = event;
 
       const checkShortcut = (item: MenuItem) => {
-        if (item.shortcut) {
+        if (item.shortcut && item.disabledShortcut !== true) {
           const keys = item.shortcut;
           const meta = keys.includes("meta") === metaKey;
           const shift = keys.includes("shift") === shiftKey;
@@ -153,7 +169,9 @@ const MainContextMenu = ({
             alt &&
             k?.toLowerCase() === key.toLowerCase()
           ) {
-            item.onSelect && item.onSelect();
+            debounce(() => {
+              item.onSelect && item.onSelect();
+            }, 100)();
           }
         }
 

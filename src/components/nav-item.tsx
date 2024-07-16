@@ -11,6 +11,14 @@ function faviconURL(u: string) {
   return url.toString();
 }
 
+const formatUrl = (url: string) => {
+  if (url.startsWith("//")) {
+    return "https:" + url;
+  }
+
+  return url;
+};
+
 const IconRenderer = ({
   cardMeta,
   url,
@@ -21,7 +29,9 @@ const IconRenderer = ({
   if (cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed) {
     return (
       <Image
-        src={(cardMeta.touchIcons || cardMeta.touchIconsPrecomposed)!}
+        src={formatUrl(
+          (cardMeta.touchIcons || cardMeta.touchIconsPrecomposed)!
+        )}
         alt=""
         className="w-full h-full rounded-sm"
         width={100}
@@ -36,7 +46,7 @@ const IconRenderer = ({
   ) {
     return (
       <Image
-        src={cardMeta.image.url}
+        src={formatUrl(cardMeta.image.url)}
         alt=""
         className="w-full h-full rounded-sm"
         width={100}
@@ -48,11 +58,11 @@ const IconRenderer = ({
   if (cardMeta?.favicon || cardMeta?.itempropImage) {
     return (
       <Image
-        src={cardMeta.favicon || cardMeta.itempropImage!}
+        src={formatUrl(cardMeta.favicon || cardMeta.itempropImage!)}
         alt=""
         width={24}
         height={24}
-        className="w-5 h-5 rounded-sm"
+        className="w-7 h-7 rounded-sm"
       />
     );
   }
@@ -63,7 +73,7 @@ const IconRenderer = ({
       alt=""
       width={24}
       height={24}
-      className="w-5 h-5 rounded-sm"
+      className="w-7 h-7 rounded-sm"
     />
   );
 };
@@ -101,12 +111,21 @@ const NavItem = (item: {
       rel="noreferrer noopener"
       className="flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-md w-24 h-24 p-2 cursor-pointer"
     >
-      <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
-        {item.icon && item.icon}
-        {!item.icon && item.url && (
-          <IconRenderer cardMeta={cardMeta} url={item.url} />
-        )}
-      </div>
+      {cardMeta?.touchIconsPrecomposed ? (
+        <div className="w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
+          {item.icon && item.icon}
+          {!item.icon && item.url && (
+            <IconRenderer cardMeta={cardMeta} url={item.url} />
+          )}
+        </div>
+      ) : (
+        <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-lg overflow-hidden">
+          {item.icon && item.icon}
+          {!item.icon && item.url && (
+            <IconRenderer cardMeta={cardMeta} url={item.url} />
+          )}
+        </div>
+      )}
       <div
         className={cn("text-sm truncate w-full text-center text-gray-800", {
           "text-shadow": hasImage,

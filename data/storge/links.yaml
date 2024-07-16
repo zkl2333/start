@@ -19,9 +19,15 @@
 - id: e05d8b14-3434-4330-8830-1965e36019c1
   url: https://tailwindcss.com/
   title: tailwindcss
-- id: 2308be76-9af6-4dec-b5c3-5626afd3bd49
-  url: https://www.radix-ui.com/
-  title: radix-ui
 - id: 2aa03502-857c-48bc-b97f-d29f25bb4fc0
   url: https://emojigraph.org/zh-hans/
   title: 表情符号
+- id: 317254c5-3330-4ff7-b303-edbfec334c24
+  url: https://translate.google.com/
+  title: 谷歌翻译
+- id: 08be2758-6edb-4547-96bc-c57fc612cecd
+  url: https://nextjs.org/
+  title: nextjs
+- id: a41b5f22-cb8e-479b-a822-fc57ff1a694b
+  url: https://docs.pmnd.rs/zustand/getting-started/introduction
+  title: zustand
