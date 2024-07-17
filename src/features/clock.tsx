@@ -30,7 +30,7 @@ const Content = () => {
 
   return (
     <div
-      className={cn("font-mono text-7xl sm:text-9xl text-center", {
+      className={cn("select-none font-mono text-7xl sm:text-9xl text-center", {
         "text-shadow": hasImage,
         "text-white": hasImage,
       })}
