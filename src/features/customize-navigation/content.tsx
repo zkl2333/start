@@ -55,7 +55,7 @@ export const Content = ({
                     label: "删除",
                     inset: true,
                     onSelect: () => {
-                      fetch(`/api/links/${item.id}`, {
+                      fetch(`/api/links?id=${item.id}`, {
                         method: "DELETE",
                       }).then(() => {
                         main();
