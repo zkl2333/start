@@ -4,13 +4,25 @@ import path from "path";
 import YAML from "yaml";
 
 // 数据文件路径
-const dataFilePath = path.join(process.cwd(), "data/storge", "links.yaml");
+const dataFileName = "links.yaml";
+const dataFilePath = path.join(process.cwd(), "data/storge", dataFileName);
+
+// 检查文件和文件夹是否存在
+async function checkFileAndDir() {
+  try {
+    await fs.access(dataFilePath);
+  } catch (err) {
+    await fs.mkdir(path.dirname(dataFilePath), { recursive: true });
+    await fs.writeFile(dataFilePath, "", "utf8");
+  }
+}
 
 // 读取数据
 async function readData() {
   try {
+    await checkFileAndDir();
     const fileContents = await fs.readFile(dataFilePath, "utf8");
-    return YAML.parse(fileContents);
+    return YAML.parse(fileContents) || [];
   } catch (err) {
     return [];
   }
@@ -18,6 +30,7 @@ async function readData() {
 
 // 写入数据
 async function writeData(data: any) {
+  await checkFileAndDir();
   const yamlStr = YAML.stringify(data);
   await fs.writeFile(dataFilePath, yamlStr, "utf8");
 }

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "docker:build": "docker build -t start .",
-    "docker:start": "docker run --name start -p 3000:3000 -v ./docker-data:/app/data --rm start"
+    "docker:start": "node docker-start.js"
   },
   "dependencies": {
     "@radix-ui/react-context-menu": "^2.2.1",

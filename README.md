@@ -9,7 +9,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./docker-data:/app/data
+      - /path/to/docker/data:/app/data
+      - /path/to/docker/data/cacahe:/app/.next/cache
     image: ghcr.io/zkl2333/start:main
 ```
 
