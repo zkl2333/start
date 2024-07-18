@@ -15,65 +15,50 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+
+const DEFAULT_VALUES = {
+  title: "",
+  url: "",
+};
 
 const formSchema = z.object({
-  title: z.string(),
+  id: z.string().optional(),
+  title: z.string().min(1, { message: "标题不能为空。" }),
   url: z.string().url({
     message: "URL必须是一个有效的URL。",
   }),
-  internalUrl: z.string().optional(),
+  internalUrl: z
+    .string()
+    .url({
+      message: "URL必须是一个有效的URL。",
+    })
+    .optional(),
+  iconUrl: z.string().optional(),
+  iconWrapper: z.boolean().optional(),
 });
 
 const AddLinkModal = NiceModal.create(
-  (defaultValues: {
-    id: string;
-    title: string;
-    url: string;
-    internalUrl: string;
-  }) => {
+  (defaultValues: z.infer<typeof formSchema>) => {
     const modal = useModal();
 
     const handlerClose = () => {
-      form.reset();
+      form.reset(DEFAULT_VALUES);
       modal.resolve();
-      modal.hide();
+      modal.remove();
     };
 
-    // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
-      defaultValues: {
-        title: "",
-        url: "",
-        internalUrl: "",
-      },
+      defaultValues: defaultValues || DEFAULT_VALUES,
     });
 
-    useEffect(() => {
-      if (defaultValues.id) {
-        form.reset(defaultValues);
-      } else {
-        console.log("reset");
-        form.reset({
-          title: "",
-          url: "",
-          internalUrl: "",
-        });
-      }
-    }, [defaultValues, form]);
-
-    // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
-      // Do something with the form values.
-      // ✅ This will be type-safe and validated.
       await fetch("/api/links", {
         method: defaultValues.id ? "PUT" : "POST",
         headers: {
@@ -91,10 +76,10 @@ const AddLinkModal = NiceModal.create(
       <Dialog
         open={modal.visible}
         onOpenChange={(open) => {
-          if (!open) {
-            handlerClose();
-          } else {
+          if (open) {
             modal.show();
+          } else {
+            handlerClose();
           }
         }}
       >
@@ -112,9 +97,8 @@ const AddLinkModal = NiceModal.create(
                   <FormItem>
                     <FormLabel>标题</FormLabel>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="链接标题" {...field} />
                     </FormControl>
-                    <FormDescription>这是一个链接的标题。</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -126,9 +110,8 @@ const AddLinkModal = NiceModal.create(
                   <FormItem>
                     <FormLabel>网址</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://shadcn.com" {...field} />
+                      <Input placeholder="https://domain.com" {...field} />
                     </FormControl>
-                    <FormDescription>这是一个链接的网址。</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -138,11 +121,10 @@ const AddLinkModal = NiceModal.create(
                 name="internalUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>内网网址</FormLabel>
+                    <FormLabel>内网地址</FormLabel>
                     <FormControl>
-                      <Input placeholder="http://localhost:3000" {...field} />
+                      <Input placeholder="https://domain.com" {...field} />
                     </FormControl>
-                    <FormDescription>这是一个链接的内网网址。</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -48,7 +48,6 @@ export const Content = ({
       if (!contextMenu) {
         return;
       }
-      console.log("click outside", isEditing);
 
       if (
         contentRef.current &&
@@ -84,7 +83,7 @@ export const Content = ({
       <ul className="flex flex-wrap justify-center">
         {urls.map((item) => {
           return (
-            <li key={item.url}>
+            <li key={item.id}>
               <MainContextMenu
                 menuItems={[
                   {
