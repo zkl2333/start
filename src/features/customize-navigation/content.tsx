@@ -104,7 +104,14 @@ export const Content = ({
                     label: "编辑",
                     inset: true,
                     onSelect: () => {
-                      alert("暂未实现");
+                      addLinkmodal
+                        .show(item)
+                        .then(() => {
+                          fetchUrls();
+                        })
+                        .catch(() => {
+                          alert("编辑失败");
+                        });
                     },
                   },
                   {
@@ -134,7 +141,6 @@ export const Content = ({
                   .show()
                   .then(() => {
                     fetchUrls();
-                    alert("添加成功");
                   })
                   .catch(() => {
                     alert("添加失败");

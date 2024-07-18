@@ -1,6 +1,6 @@
 # 这是一个自部署的网址导航和简单的应用程序仪表板
 
-## 基于 Docker Comopnent 部署
+## 基于 Docker Component 部署
 
 ```yaml
 version: "3"

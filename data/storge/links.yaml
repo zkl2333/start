@@ -58,9 +58,9 @@
 - id: bf53036d-2ff7-44cc-8cc0-47dc9e627600
   url: https://juejin.cn/
   title: 掘金
-- id: 6a1b89d5-b1b3-4f77-893d-6e779a617761
-  url: https://open.taobao.com/
-  title: 淘宝开放平台
 - id: 9b5e40aa-2b89-4f85-85ee-689dab0447bd
   url: https://rustwiki.org/docs/
   title: rustwiki
+- url: https://baidu.com
+  title: 表弟
+  id: d5f471ef-c1b2-4a80-b205-9876e3c16870
