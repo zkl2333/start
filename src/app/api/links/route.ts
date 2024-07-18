@@ -90,10 +90,9 @@ export async function DELETE(request: Request) {
 
 export async function PUT(request: Request) {
   const body = await request.json();
-  const { id, url, title } = body;
 
   let links = await readData();
-  const index = links.findIndex((item: { id: any }) => item.id === id);
+  const index = links.findIndex((item: { id: any }) => item.id === body.id);
 
   if (index === -1) {
     return new Response(
@@ -105,7 +104,7 @@ export async function PUT(request: Request) {
     );
   }
 
-  links[index] = { url, title, id };
+  links[index] = body;
   await writeData(links);
 
   return new Response(
