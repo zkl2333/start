@@ -4,6 +4,7 @@ import clock from "@/features/clock";
 import customizeNavigation from "@/features/customize-navigation";
 import wallpaperFeature from "@/features/wallpaper";
 import { useCoreStore } from "@/providers/core-store-provider";
+import NiceModal from "@ebay/nice-modal-react";
 import { useEffect } from "react";
 
 const useAllFeatures = () => {
@@ -61,34 +62,36 @@ export default function Home() {
   }, [coreStore]);
 
   return (
-    <MainContextMenu
-      menuItems={menuItems}
-      updateMenuItem={(menuItem) => {
-        menuItem.id && coreStore.updateContextMenu(menuItem.id, menuItem);
-      }}
-    >
-      <div className="h-svh w-full">
-        <div className="absolute inset-0 h-full w-full -z-10">
-          {enabledFeatures.map((feature) => {
-            return feature.render && <feature.render key={feature.id} />;
-          })}
-        </div>
-        <div className="absolute h-full w-full flex flex-col overflow-auto">
-          <div className="container h-full flex flex-col justify-center gap-20">
+    <NiceModal.Provider>
+      <MainContextMenu
+        menuItems={menuItems}
+        updateMenuItem={(menuItem) => {
+          menuItem.id && coreStore.updateContextMenu(menuItem.id, menuItem);
+        }}
+      >
+        <div className="main-content h-svh w-full">
+          <div className="absolute inset-0 h-full w-full -z-10">
             {enabledFeatures.map((feature) => {
-              return (
-                feature.content && (
-                  <feature.content
-                    key={feature.id}
-                    globalMenuItems={menuItems}
-                    updateMenuItem={coreStore.updateContextMenu}
-                  />
-                )
-              );
+              return feature.render && <feature.render key={feature.id} />;
             })}
           </div>
+          <div className="absolute h-full w-full flex flex-col overflow-auto">
+            <div className="container h-full flex flex-col justify-center gap-20">
+              {enabledFeatures.map((feature) => {
+                return (
+                  feature.content && (
+                    <feature.content
+                      key={feature.id}
+                      globalMenuItems={menuItems}
+                      updateMenuItem={coreStore.updateContextMenu}
+                    />
+                  )
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
-    </MainContextMenu>
+      </MainContextMenu>
+    </NiceModal.Provider>
   );
 }

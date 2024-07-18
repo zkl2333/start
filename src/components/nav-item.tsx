@@ -5,9 +5,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 function faviconURL(u: string) {
-  const url = new URL("https://www.google.com/s2/favicons");
-  url.searchParams.set("domain", u);
-  url.searchParams.set("size", "32");
+  const url = new URL("https://t0.gstatic.com/faviconV2");
+  url.searchParams.set("client", "SOCIAL");
+  url.searchParams.set("type", "FAVICON");
+  url.searchParams.set("fallback_opts", "TYPE,SIZE,URL");
+  url.searchParams.set("url", u);
+  url.searchParams.set("size", "256");
   return url.toString();
 }
 

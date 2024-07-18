@@ -1,5 +1,4 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -8,32 +7,37 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import NavItem from "@/components/nav-item";
 
-const AddLinkBtn = ({
-  onReload,
-  isEditing,
-}: {
-  onReload: () => void;
-  isEditing: boolean;
-}) => {
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+
+const AddLinkModal = NiceModal.create(() => {
+  const modal = useModal();
+
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
 
+  const handlerClose = () => {
+    setTitle("");
+    setUrl("");
+    modal.resolve();
+    modal.hide();
+  };
+
   return (
-    <Dialog>
-      <DialogTrigger>
-        <NavItem
-          title="添加"
-          icon={<PlusIcon className="w-6 h-6" />}
-          isEditing={isEditing}
-        />
-      </DialogTrigger>
+    <Dialog
+      open={modal.visible}
+      onOpenChange={(open) => {
+        if (!open) {
+          handlerClose();
+        } else {
+          modal.show();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>添加链接</DialogTitle>
@@ -78,9 +82,7 @@ const AddLinkBtn = ({
                     url,
                   }),
                 });
-                onReload();
-                setTitle("");
-                setUrl("");
+                await handlerClose();
               }}
               onSubmit={async (e) => {
                 console.log(e);
@@ -93,6 +95,6 @@ const AddLinkBtn = ({
       </DialogContent>
     </Dialog>
   );
-};
+});
 
-export default AddLinkBtn;
+export default AddLinkModal;
