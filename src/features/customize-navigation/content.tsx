@@ -2,7 +2,7 @@ import MainContextMenu, {
   getContextMenu,
   MenuItem,
 } from "@/components/main-context-menu";
-import NavItem from "@/components/nav-item";
+import NavItem from "./nav-item";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import AddLinkModal from "./addDialog";
 import { cn } from "@/lib/utils";
@@ -19,12 +19,13 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
-  rectSortingStrategy,
+  // rectSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { INavItem } from "./types";
 
 export function SortableItem(props: {
   id: string;
@@ -46,7 +47,7 @@ export function SortableItem(props: {
   };
 
   return (
-    <div
+    <li
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -56,7 +57,7 @@ export function SortableItem(props: {
       })}
     >
       {props.children}
-    </div>
+    </li>
   );
 }
 
@@ -67,13 +68,7 @@ export const Content = ({
   globalMenuItems: MenuItem[];
   updateMenuItem: (id: string, contextMenu: MenuItem) => void;
 }) => {
-  const [urls, setUrls] = useState<
-    {
-      id: string;
-      url: string;
-      title?: string;
-    }[]
-  >([]);
+  const [urls, setUrls] = useState<INavItem[]>([]);
 
   const fetchUrls = async () => {
     const res = await fetch("/api/links").then((res) => res.json());
@@ -136,6 +131,15 @@ export const Content = ({
   );
 
   async function handleDragEnd(event: any) {
+    console.log("drag end");
+  }
+
+  const handleDragStart = () => {
+    console.log("drag start");
+  };
+
+  const handleDragOver = (event: any) => {
+    console.log("drag over");
     const { active, over } = event;
 
     if (active.id !== over.id) {
@@ -145,15 +149,54 @@ export const Content = ({
       const newUrls = arrayMove(urls, oldIndex, newIndex);
       setUrls(newUrls);
     }
-  }
+  };
+
+  const getContextMenuItems = (item: any): MenuItem[] => {
+    return [
+      {
+        type: "item",
+        label: "删除",
+        inset: true,
+        onSelect: () => {
+          fetch(`/api/links?id=${item.id}`, {
+            method: "DELETE",
+          }).then(() => {
+            fetchUrls();
+          });
+        },
+      },
+      {
+        type: "item",
+        label: "编辑",
+        inset: true,
+        onSelect: () => {
+          addLinkmodal
+            .show(item)
+            .then(() => {
+              fetchUrls();
+            })
+            .catch(() => {
+              alert("编辑失败");
+            });
+        },
+      },
+      {
+        type: "separator",
+      },
+      ...globalMenuItems,
+    ];
+  };
 
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
     >
-      <SortableContext items={urls} strategy={rectSortingStrategy}>
+      <SortableContext items={urls} strategy={() => null}>
+        {/* <SortableContext items={urls} strategy={rectSortingStrategy}> */}
         <div
           ref={contentRef}
           className={cn("p-2 min-h-[19rem]", {
@@ -164,52 +207,18 @@ export const Content = ({
             {urls.map((item) => {
               return (
                 <SortableItem key={item.id} id={item.id} disabled={!isEditing}>
-                  <li>
-                    <MainContextMenu
-                      menuItems={[
-                        {
-                          type: "item",
-                          label: "删除",
-                          inset: true,
-                          onSelect: () => {
-                            fetch(`/api/links?id=${item.id}`, {
-                              method: "DELETE",
-                            }).then(() => {
-                              fetchUrls();
-                            });
-                          },
-                        },
-                        {
-                          type: "item",
-                          label: "编辑",
-                          inset: true,
-                          onSelect: () => {
-                            addLinkmodal
-                              .show(item)
-                              .then(() => {
-                                fetchUrls();
-                              })
-                              .catch(() => {
-                                alert("编辑失败");
-                              });
-                          },
-                        },
-                        {
-                          type: "separator",
-                        },
-                        ...globalMenuItems,
-                      ]}
-                      updateMenuItem={(menuItem) =>
-                        menuItem.id && updateMenuItem(menuItem.id, menuItem)
-                      }
-                    >
-                      <NavItem
-                        url={item.url}
-                        title={item.title || ""}
-                        isEditing={isEditing}
-                      />
-                    </MainContextMenu>
-                  </li>
+                  <MainContextMenu
+                    menuItems={getContextMenuItems(item)}
+                    updateMenuItem={(menuItem) =>
+                      menuItem.id && updateMenuItem(menuItem.id, menuItem)
+                    }
+                  >
+                    <NavItem
+                      url={item.url}
+                      title={item.title || ""}
+                      isEditing={isEditing}
+                    />
+                  </MainContextMenu>
                 </SortableItem>
               );
             })}

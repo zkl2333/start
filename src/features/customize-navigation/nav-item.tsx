@@ -114,7 +114,7 @@ const NavItem = (item: {
       target="_blank"
       rel="noreferrer noopener"
       className={cn(
-        "select-none flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl h-24 p-2 cursor-pointer",
+        "w-full h-full select-none flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl p-2 cursor-pointer",
         {
           "animate-wiggle": item.isEditing,
         }

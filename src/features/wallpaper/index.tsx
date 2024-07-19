@@ -1,4 +1,4 @@
-import Wallpaper, { WallpaperRef } from "@/components/wallpaper";
+import Wallpaper, { WallpaperRef } from "./wallpaper";
 import { createEventBus } from "@/lib/utils";
 import { createFeature } from "@/stores/core-store";
 import { useRef, useEffect } from "react";

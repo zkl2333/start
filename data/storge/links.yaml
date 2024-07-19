@@ -64,9 +64,6 @@
 - url: https://baidu.com
   title: 百度
   id: d5f471ef-c1b2-4a80-b205-9876e3c16870
-- id: 83dbfe2c-fccb-43ee-99ee-d19a64bce606
-  url: https://www.bilibili.com/
-  title: bilibili
 - id: ad3a6609-0298-477f-b592-8d27fe77526c
   url: https://vant-ui.github.io/vant-weapp/#/home
   title: vant-ui
