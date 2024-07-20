@@ -48,20 +48,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { url, title } = body;
-
-  if (!url) {
-    return new Response(
-      JSON.stringify({
-        success: false,
-        message: "url is required",
-      }),
-      { status: 400 }
-    );
-  }
 
   const links = await readData();
-  links.push({ id: uuidv4(), url, title });
+  links.push({ id: uuidv4(), ...body });
   await writeData(links);
 
   return new Response(

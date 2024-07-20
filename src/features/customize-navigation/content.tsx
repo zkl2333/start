@@ -2,7 +2,7 @@ import MainContextMenu, {
   getContextMenu,
   MenuItem,
 } from "@/components/main-context-menu";
-import NavItem from "./nav-item";
+import NavItem from "./components/nav-item";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import AddLinkModal from "./addDialog";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
-  // rectSortingStrategy,
+  rectSortingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -195,11 +195,11 @@ export const Content = ({
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
     >
-      <SortableContext items={urls} strategy={() => null}>
-        {/* <SortableContext items={urls} strategy={rectSortingStrategy}> */}
+      {/* <SortableContext items={urls} strategy={() => null}> */}
+      <SortableContext items={urls} strategy={rectSortingStrategy}>
         <div
           ref={contentRef}
-          className={cn("p-2 min-h-[19rem]", {
+          className={cn("p-2 min-h-[19rem] glass", {
             "bg-gray-100/20 rounded-3xl": isEditing,
           })}
         >
@@ -213,11 +213,7 @@ export const Content = ({
                       menuItem.id && updateMenuItem(menuItem.id, menuItem)
                     }
                   >
-                    <NavItem
-                      url={item.url}
-                      title={item.title || ""}
-                      isEditing={isEditing}
-                    />
+                    <NavItem item={item} isEditing={isEditing} />
                   </MainContextMenu>
                 </SortableItem>
               );
@@ -235,7 +231,9 @@ export const Content = ({
                         alert("添加失败");
                       });
                   }}
-                  title="添加"
+                  item={{
+                    title: "添加",
+                  }}
                   icon={<PlusIcon className="w-6 h-6" />}
                   isEditing={isEditing}
                 />

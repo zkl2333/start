@@ -66,4 +66,34 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .checkerboard {
+    background-image: linear-gradient(
+        45deg,
+        #eee 25%,
+        transparent 25%,
+        transparent 75%,
+        #eee 75%
+      ),
+      linear-gradient(
+        45deg,
+        #eee 25%,
+        transparent 25%,
+        transparent 75%,
+        #eee 75%
+      );
+    background-size: 16px 16px;
+    background-position: 0 0, 8px 8px;
+  }
+
+  /* 毛玻璃 */
+  .glass {
+    border-radius: 34px;
+    border: 1.4px solid rgba(255, 255, 255, 0.4);
+    background: var(--Windows-Glass, rgba(128, 128, 128, 0.3));
+    background-blend-mode: luminosity;
+
+    /* Blur */
+    backdrop-filter: blur(50px);
+  }
 }

@@ -5,30 +5,32 @@ import * as cheerio from "cheerio";
 const userAgent =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
 
-export interface ICardMeta {
+export interface ISiteMeta {
   title: string;
   description: string;
   url: string;
   ogImage?: SuccessResult["result"]["ogImage"];
   twitterImage?: SuccessResult["result"]["twitterImage"];
   image?: { url: string; width?: number; height?: number };
-  favicon: string;
+  favicon?: string;
+  favicon_32?: string;
   touchIcons?: string;
   touchIconsPrecomposed?: string;
   itempropImage?: string;
 }
 
-// 获取网站的 apple-touch-icon apple-touch-icon-precomposed itemprop="image"
 const getMoreIcon = (html: string) => {
   const $ = cheerio.load(html);
   const touchIcons = $("link[rel='apple-touch-icon']");
   const touchIconsPrecomposed = $("link[rel='apple-touch-icon-precomposed']");
   const itempropImage = $("meta[itemprop='image']");
+  const favicon_32 = $("link[rel='icon'][sizes='32x32']");
 
   return {
     touchIcons: touchIcons.attr("href"),
     touchIconsPrecomposed: touchIconsPrecomposed.attr("href"),
     itempropImage: itempropImage.attr("content"),
+    favicon_32: favicon_32.attr("href"),
   };
 };
 
@@ -43,11 +45,7 @@ const joinPath = (base: string, path?: string) => {
 
 // 判断是否为绝对路径
 const isAbsolute = (url?: string) => {
-  return (
-    url?.startsWith("http://") ||
-    url?.startsWith("https://") ||
-    url?.startsWith("//")
-  );
+  return url?.startsWith("http://") || url?.startsWith("https://");
 };
 
 // 获取最好的图片
@@ -83,13 +81,25 @@ const getBestImage = (images: SuccessResult["result"]["ogImage"]) => {
   });
 };
 
-const createCardMeta = (requestUrl: string, data: SuccessResult): ICardMeta => {
+const createCardMeta = (requestUrl: string, data: SuccessResult): ISiteMeta => {
   const result = data.result;
   const image = getBestImage(result.ogImage || result.twitterImage);
 
   const { touchIcons, touchIconsPrecomposed, itempropImage } = getMoreIcon(
     data.html
   );
+
+  const formatUrl = <T extends string | undefined>(url?: T): T => {
+    if (!url) {
+      return url as T;
+    }
+
+    if (url.startsWith("//")) {
+      return ("https:" + url) as T;
+    }
+
+    return isAbsolute(url) ? url : (joinPath(requestUrl, url) as T);
+  };
 
   return {
     title: result.ogTitle || result.twitterTitle || result.dcTitle || "",
@@ -99,28 +109,19 @@ const createCardMeta = (requestUrl: string, data: SuccessResult): ICardMeta => {
       result.dcDescription ||
       "",
     url: requestUrl,
-    ogImage: result.ogImage,
-    twitterImage: result.twitterImage,
-    image: image
-      ? {
-          ...image,
-          url: isAbsolute(image.url)
-            ? image.url
-            : joinPath(requestUrl, image.url),
-        }
-      : undefined,
-    favicon: isAbsolute(result.favicon)
-      ? result.favicon!
-      : joinPath(requestUrl, result.favicon),
-    touchIcons: isAbsolute(touchIcons)
-      ? touchIcons
-      : joinPath(requestUrl, touchIcons),
-    touchIconsPrecomposed: isAbsolute(touchIconsPrecomposed)
-      ? touchIconsPrecomposed
-      : joinPath(requestUrl, touchIconsPrecomposed),
-    itempropImage: isAbsolute(itempropImage)
-      ? itempropImage
-      : joinPath(requestUrl, itempropImage),
+    ogImage: result.ogImage?.map((image) => ({
+      ...image,
+      url: formatUrl(image.url),
+    })),
+    twitterImage: result.twitterImage?.map((image) => ({
+      ...image,
+      url: formatUrl(image.url),
+    })),
+    image: { ...image, url: formatUrl(image?.url) },
+    favicon: formatUrl(result.favicon),
+    touchIcons: formatUrl(touchIcons),
+    touchIconsPrecomposed: formatUrl(touchIconsPrecomposed),
+    itempropImage: formatUrl(itempropImage),
   };
 };
 
