@@ -15,12 +15,23 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Switch } from "@/components/ui/switch";
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
 
 const DEFAULT_VALUES = {
   title: "",
@@ -29,10 +40,16 @@ const DEFAULT_VALUES = {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string().min(1, { message: "标题不能为空。" }),
-  url: z.string().url({
-    message: "URL必须是一个有效的URL。",
+  title: z.string({
+    required_error: "标题不能为空。",
   }),
+  url: z
+    .string({
+      required_error: "URL 不能为空。",
+    })
+    .url({
+      message: "URL必须是一个有效的URL。",
+    }),
   internalUrl: z
     .string()
     .url({
@@ -83,13 +100,36 @@ const AddLinkModal = NiceModal.create(
           }
         }}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[520px] flex flex-col">
           <DialogHeader>
             <DialogTitle>{defaultValues.id ? "编辑" : "添加"}链接</DialogTitle>
             <DialogDescription>添加一个新的链接到你的导航</DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+              <FormField
+                control={form.control}
+                name="url"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>网址</FormLabel>
+                    <div className="flex w-full items-center space-x-2">
+                      <FormControl>
+                        <Input placeholder="https://domain.com" {...field} />
+                      </FormControl>
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          console.log("获取图标");
+                        }}
+                      >
+                        获取图标
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="title"
@@ -105,19 +145,6 @@ const AddLinkModal = NiceModal.create(
               />
               <FormField
                 control={form.control}
-                name="url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>网址</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://domain.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="internalUrl"
                 render={({ field }) => (
                   <FormItem>
@@ -126,6 +153,67 @@ const AddLinkModal = NiceModal.create(
                       <Input placeholder="https://domain.com" {...field} />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="iconUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>选择图标</FormLabel>
+                    <FormControl>
+                      <div className="px-12 flex-1">
+                        <Carousel
+                          className="flex-1 p-2"
+                          opts={{
+                            loop: true,
+                            slidesToScroll: "auto",
+                            dragFree: true,
+                          }}
+                        >
+                          <CarouselContent className="-ml-1">
+                            {Array.from({ length: 15 }).map((_, index) => (
+                              <CarouselItem
+                                key={index}
+                                className="pl-1 basis-1/5"
+                              >
+                                <div className="flex border aspect-square items-center justify-center">
+                                  <span className="text-sm font-semibold">
+                                    {index + 1}
+                                  </span>
+                                </div>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious type="button" />
+                          <CarouselNext type="button" />
+                        </Carousel>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="iconWrapper"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>图标底色</FormLabel>
+                      <FormDescription>
+                        当图标较小时，添加一个背景色以增加可见性。
+                      </FormDescription>
+                    </div>
                   </FormItem>
                 )}
               />

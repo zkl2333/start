@@ -203,7 +203,7 @@ export const Content = ({
             "bg-gray-100/20 rounded-3xl": isEditing,
           })}
         >
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))]">
+          <ul className="grid grid-cols-[repeat(auto-fill,7rem)] justify-center gap-0">
             {urls.map((item) => {
               return (
                 <SortableItem key={item.id} id={item.id} disabled={!isEditing}>
