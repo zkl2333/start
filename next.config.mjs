@@ -4,15 +4,8 @@
 const nextConfig = {
   output: "standalone",
   images: {
+    minimumCacheTTL: 60 * 60 * 24,
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**.google.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.bing.com",
-      },
       {
         hostname: "*",
       },

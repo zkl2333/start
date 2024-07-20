@@ -252,10 +252,18 @@ const AddLinkModal = NiceModal.create(
                           return getIcons(field.value).then(
                             ({ icons, title }) => {
                               setIcons(icons);
-                              form.setValue("iconUrl", icons[0].url);
-                              form.setValue("iconWrapper", icons[0].wrapper);
+
                               if (title && !form.getValues("title")) {
                                 form.setValue("title", title);
+                              }
+
+                              if (icons.length === 0) {
+                                return;
+                              }
+
+                              if (!form.getValues("iconUrl")) {
+                                form.setValue("iconUrl", icons[0].url);
+                                form.setValue("iconWrapper", icons[0].wrapper);
                               }
                             }
                           );

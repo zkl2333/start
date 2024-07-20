@@ -7,11 +7,15 @@
   iconUrl: https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png
   iconWrapper: true
 - id: 4f6c0f80-26a3-4bde-b56d-f107c2460bb8
-  url: https://www.bilibili.com/
   title: bilibili
+  url: https://www.bilibili.com/
+  iconUrl: https://i0.hdslb.com/bfs/static/jinkela/long/images/512.png
+  iconWrapper: false
 - id: 73addab1-8764-4646-8bfd-5d912a55ab4a
-  url: https://github.com/
   title: github
+  url: https://github.com/
+  iconUrl: https://github.githubassets.com/favicons/favicon.svg
+  iconWrapper: true
 - id: e1a9c7a1-a6a5-486b-8387-7c9b8cea0c5a
   url: https://ui.shadcn.com/
   title: shadcn
@@ -32,11 +36,15 @@
   url: https://translate.google.com/
   title: 谷歌翻译
 - id: 08be2758-6edb-4547-96bc-c57fc612cecd
-  url: https://nextjs.org/
   title: nextjs
+  url: https://nextjs.org/
+  iconUrl: https://nextjs.org/favicon.ico
+  iconWrapper: true
 - id: a41b5f22-cb8e-479b-a822-fc57ff1a694b
-  url: https://docs.pmnd.rs/zustand/getting-started/introduction
   title: zustand
+  url: https://docs.pmnd.rs/zustand/getting-started/introduction
+  iconUrl: https://docs.pmnd.rs/zustand.ico
+  iconWrapper: true
 - id: 902390c7-6e27-487c-a779-f42f96cb5b94
   title: medium
   url: https://medium.com/
@@ -78,14 +86,11 @@
   url: https://rustwiki.org/docs/
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Frustwiki.org%2Fdocs%2F&size=256
   iconWrapper: false
-- id: d5f471ef-c1b2-4a80-b205-9876e3c16870
-  title: 百度
-  url: https://baidu.com
-  iconUrl: https://www.baidu.com/favicon.ico
-  iconWrapper: false
 - id: ad3a6609-0298-477f-b592-8d27fe77526c
-  url: https://vant-ui.github.io/vant-weapp/#/home
   title: vant-ui
+  url: https://vant-ui.github.io/vant-weapp/#/home
+  iconUrl: https://img.yzcdn.cn/vant/logo.png
+  iconWrapper: true
 - id: b4ec8b4a-a15b-4d63-9ae6-e993d88ff5de
   title: carbon
   url: https://carbon.now.sh/
@@ -122,8 +127,10 @@
   iconUrl: https://static.deepl.com/img/apple-touch-icon.png
   iconWrapper: false
 - id: 8cf30308-a48a-45b9-8af5-3ebfacc00858
-  url: https://unbug.github.io/codelf/
   title: 变量取名
+  url: https://unbug.github.io/codelf/
+  iconUrl: https://unbug.github.io/codelf/images/codelf_logo.f4ae25bd.png
+  iconWrapper: false
 - id: 27f44938-936d-46d1-bf89-3ba876a1c0c1
   title: makerworld
   url: https://makerworld.com/zh
@@ -149,19 +156,25 @@
   iconUrl: https://codrops-1f606.kxcdn.com/codrops/wp-content/themes/codropstheme03/favicons/apple-touch-icon.png?x20951&v=2
   iconWrapper: false
 - id: 2dd0ec52-baf7-4104-9546-c2a656fb2814
-  url: https://anse.app/
   title: anse
+  url: https://anse.app/
+  iconUrl: https://anse.app/apple-touch-icon.png
+  iconWrapper: false
 - id: 39427f91-e32e-4e67-bef8-d9fd6ccfea84
-  url: https://mobx.js.org/
   title: mobx
+  url: https://mobx.js.org/
+  iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fmobx.js.org%2F&size=256
+  iconWrapper: true
 - id: 6f4d2d17-ad4e-4274-8548-f273849b44d4
   title: react
   url: https://react.dev/
   iconUrl: https://react.dev/apple-touch-icon.png
   iconWrapper: false
 - id: c0bcd0a7-454a-42c2-aa7e-6cde256748a2
-  url: https://vuejs.org/
   title: vuejs
+  url: https://vuejs.org/
+  iconUrl: https://vuejs.org/images/logo.png
+  iconWrapper: false
 - id: 61ab6f77-e236-45ef-8f31-365874eadef0
   title: css 转 tailwind
   url: https://dev.libkit.cn/css-to-tailwind
@@ -173,8 +186,10 @@
   iconUrl: https://img.daisyui.com/images/daisyui-logo/favicon-180.png
   iconWrapper: true
 - id: 410f7847-7d23-4902-ad03-3a44a033af8d
-  url: https://www.radix-ui.com
   title: radix-ui
+  url: https://www.radix-ui.com
+  iconUrl: https://www.radix-ui.com/favicon.png
+  iconWrapper: true
 - id: 1d63109a-bc96-4c8d-97cf-da988e4c5cfd
   title: 宏任务和微任务
   url: https://blog.poetries.top/browser-working-principle/guide/part4/lesson18.html

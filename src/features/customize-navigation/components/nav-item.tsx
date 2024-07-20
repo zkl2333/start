@@ -2,9 +2,11 @@ import { ISiteMeta } from "@/app/api/site-info/route";
 import { cn } from "@/lib/utils";
 import { useCoreStore } from "@/providers/core-store-provider";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { INavItem } from "../types";
 import SiteIcon from "./icon";
+import useSWRImmutable from "swr/immutable";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMemo } from "react";
 
 function faviconURL(u: string) {
   const url = new URL("https://t0.gstatic.com/faviconV2");
@@ -16,12 +18,31 @@ function faviconURL(u: string) {
   return url.toString();
 }
 
-const formatUrl = (url: string) => {
-  if (url.startsWith("//")) {
-    return "https:" + url;
+const getIconUrl = (cardMeta: ISiteMeta | null, url: string) => {
+  if (cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed) {
+    return cardMeta.touchIcons || cardMeta.touchIconsPrecomposed!;
   }
+  if (
+    cardMeta?.image?.url &&
+    cardMeta?.image?.width === cardMeta?.image?.height
+  ) {
+    return cardMeta.image.url;
+  }
+  if (cardMeta?.favicon || cardMeta?.itempropImage) {
+    return cardMeta.favicon || cardMeta.itempropImage!;
+  }
+  return faviconURL(url);
+};
 
-  return url;
+const getIconSize = (cardMeta: ISiteMeta | null) => {
+  if (
+    cardMeta?.touchIcons ||
+    cardMeta?.touchIconsPrecomposed ||
+    (cardMeta?.image?.url && cardMeta?.image?.width === cardMeta?.image?.height)
+  ) {
+    return false;
+  }
+  return true;
 };
 
 const IconRenderer = ({
@@ -31,55 +52,11 @@ const IconRenderer = ({
   cardMeta: ISiteMeta | null;
   url: string;
 }) => {
-  if (cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed) {
-    return (
-      <Image
-        src={formatUrl(
-          (cardMeta.touchIcons || cardMeta.touchIconsPrecomposed)!
-        )}
-        alt=""
-        className="w-full h-full rounded-sm"
-        width={100}
-        height={100}
-      />
-    );
-  }
-  if (
-    cardMeta?.image?.url &&
-    cardMeta?.image?.width &&
-    cardMeta?.image?.width === cardMeta?.image?.height
-  ) {
-    return (
-      <Image
-        src={formatUrl(cardMeta.image.url)}
-        alt=""
-        className="w-full h-full rounded-sm"
-        width={100}
-        height={100}
-      />
-    );
-  }
-
-  if (cardMeta?.favicon || cardMeta?.itempropImage) {
-    return (
-      <Image
-        src={formatUrl(cardMeta.favicon || cardMeta.itempropImage!)}
-        alt=""
-        width={24}
-        height={24}
-        className="w-7 h-7 rounded-sm"
-      />
-    );
-  }
+  const iconUrl = useMemo(() => getIconUrl(cardMeta, url), [cardMeta, url]);
+  const wrapper = useMemo(() => getIconSize(cardMeta), [cardMeta]);
 
   return (
-    <Image
-      src={faviconURL(url)}
-      alt=""
-      width={24}
-      height={24}
-      className="w-7 h-7 rounded-sm"
-    />
+    <SiteIcon url={iconUrl} alt={cardMeta?.title || ""} wrapper={wrapper} />
   );
 };
 
@@ -94,24 +71,43 @@ const NavItem = ({
   isEditing: boolean;
   onClick?: () => void;
 }) => {
-  const [cardMeta, setCardMeta] = useState<ISiteMeta | null>(null);
-
   const hasImage = useCoreStore((state) =>
     state.features.some((f) => f.id === "wallpaper" && f.enabled)
   );
 
-  useEffect(() => {
-    const fetchCardMeta = async (url: string) => {
-      const res = await fetch(`/api/site-info?url=${url}`);
-      const data = await res.json();
+  const fetcher = (...rest: Parameters<typeof fetch>) =>
+    fetch(...rest).then((res) => res.json());
 
-      if (data.success) {
-        setCardMeta(data.result);
-      }
-    };
+  const { data, error, isLoading } = useSWRImmutable(
+    item.url && !item.iconUrl ? `/api/site-info?url=${item.url}` : null,
+    fetcher
+  );
 
-    item.url && !icon && !item.iconUrl && fetchCardMeta(item.url);
-  }, [icon, item.iconUrl, item.url]);
+  const cardMeta = data?.success ? data.result : null;
+
+  const renderIcon = () => {
+    if (icon) {
+      return icon;
+    }
+
+    if (item.iconUrl) {
+      return (
+        <SiteIcon
+          url={item.iconUrl}
+          alt={item.title}
+          wrapper={item.iconWrapper}
+        />
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <Skeleton className="w-10 h-10 flex items-center justify-center rounded-xl" />
+      );
+    }
+
+    return <IconRenderer cardMeta={cardMeta} url={item.url!} />;
+  };
 
   return (
     <a
@@ -126,32 +122,7 @@ const NavItem = ({
         }
       )}
     >
-      {item.iconUrl ? (
-        <SiteIcon
-          url={item.iconUrl}
-          alt={item.title}
-          wrapper={item.iconWrapper}
-        />
-      ) : (
-        <>
-          {cardMeta?.touchIcons || cardMeta?.touchIconsPrecomposed ? (
-            <div className="w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden">
-              {icon && icon}
-              {!icon && item.url && (
-                <IconRenderer cardMeta={cardMeta} url={item.url} />
-              )}
-            </div>
-          ) : (
-            <div className="bg-gray-200/80 w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden">
-              {icon && icon}
-              {!icon && item.url && (
-                <IconRenderer cardMeta={cardMeta} url={item.url} />
-              )}
-            </div>
-          )}
-        </>
-      )}
-
+      {renderIcon()}
       <div
         className={cn("text-sm truncate w-full text-center text-gray-800", {
           "text-shadow": hasImage,

@@ -85,15 +85,43 @@
     background-size: 16px 16px;
     background-position: 0 0, 8px 8px;
   }
+}
 
-  /* 毛玻璃 */
-  .glass {
-    border-radius: 34px;
-    border: 1.4px solid rgba(255, 255, 255, 0.4);
-    background: var(--Windows-Glass, rgba(128, 128, 128, 0.3));
-    background-blend-mode: luminosity;
+/* 毛玻璃 */
+.glass {
+  background: var(--Windows-Glass, rgba(128, 128, 128, 0.3));
+  background-blend-mode: luminosity;
 
-    /* Blur */
-    backdrop-filter: blur(50px);
-  }
+  /* Blur */
+  backdrop-filter: blur(50px);
+
+  --border-radius: 34px;
+  --border-width: 1.4px;
+  --border-color: linear-gradient(
+    158.2deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 41%,
+    rgba(255, 255, 255, 0) 57%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-radius: var(--border-radius);
+}
+
+.glass::after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--border-width);
+  border-radius: var(--border-radius);
+  background: var(--border-color);
+  /* 随便定义一个颜色 */
+  --mask-bg: linear-gradient(red, red);
+  --mask-clip: content-box, padding-box;
+  -webkit-mask-image: var(--mask-bg), var(--mask-bg);
+  -webkit-mask-clip: var(--mask-clip);
+  /* exclude排除，只显示不重合的地方,Firefox支持4个属性 */
+  mask-composite: exclude;
+  /* 只显示下方遮罩，重合的地方不显示 */
+  -webkit-mask-composite: destination-out;
 }
