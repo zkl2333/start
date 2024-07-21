@@ -37,31 +37,64 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
+# 安装 gosu
+ENV GOSU_VERSION=1.17
+RUN set -eux; \
+	\
+	apk add --no-cache --virtual .gosu-deps \
+		ca-certificates \
+		dpkg \
+		gnupg \
+	; \
+	\
+	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
+	\
+# verify the signature
+	export GNUPGHOME="$(mktemp -d)"; \
+	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+	\
+# clean up fetch dependencies
+	apk del --no-network .gosu-deps; \
+	\
+	chmod +x /usr/local/bin/gosu; \
+# verify that the binary works
+	gosu --version; \
+	gosu nobody true
+
 ENV NODE_ENV=production
 # 如果你想在运行时禁用遥测，请取消注释以下行。
 # ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 
 # 为 prerender 缓存设置正确的权限
 RUN mkdir .next
-RUN chown nextjs:nodejs .next
 
 # 自动利用输出跟踪以减少镜像大小
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/start.sh ./
-RUN chmod +x ./start.sh
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/entrypoint.sh ./
 
-USER nextjs
+RUN chmod +x ./entrypoint.sh
 
-EXPOSE 3000
-
+ENV PUID=1000
+ENV PGID=1000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-ENTRYPOINT ["./start.sh"]
+EXPOSE 3000
+VOLUME /app/.next/cache
+VOLUME /app/data
+
+ENTRYPOINT ["./entrypoint.sh"]
+
+# 启动应用程序
+# server.js 是由 next build 从 standalone 输出创建的
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD ["node", "server.js"]

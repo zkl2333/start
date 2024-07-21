@@ -6,11 +6,14 @@
 version: "3"
 services:
   start:
+    environment:
+      - PUID=1000
+      - PGID=1000
     ports:
       - "3000:3000"
     volumes:
       - /path/to/docker/data:/app/data
-      - /path/to/docker/data/cacahe:/app/.next/cache
+      - /path/to/docker/data/cache:/app/.next/cache
     image: ghcr.io/zkl2333/start:main
 ```
 
