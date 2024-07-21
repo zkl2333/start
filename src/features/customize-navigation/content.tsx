@@ -8,6 +8,7 @@ import AddLinkModal from "./addDialog";
 import { cn } from "@/lib/utils";
 import { useModal } from "@ebay/nice-modal-react";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { getCategorys, ICategroy } from "./actions";
 
 import {
   DndContext,
@@ -69,15 +70,19 @@ export const Content = ({
   updateMenuItem: (id: string, contextMenu: MenuItem) => void;
 }) => {
   const [urls, setUrls] = useState<INavItem[]>([]);
+  const [categorys, setCategorys] = useState<ICategroy[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const fetchUrls = async () => {
     const res = await fetch("/api/links").then((res) => res.json());
     setUrls(res.data);
   };
 
-  useEffect(() => {
-    fetchUrls();
-  }, []);
+  const fetchCategory = async () => {
+    const chategorys = await getCategorys();
+    setCategorys(chategorys);
+    chategorys[0] && setActiveCategory(chategorys[0].name);
+  };
 
   const contextMenu = useMemo<MenuItem | null>(
     () => getContextMenu("customizeNavigationEditingMode", globalMenuItems),
@@ -187,61 +192,115 @@ export const Content = ({
     ];
   };
 
+  useEffect(() => {
+    fetchUrls();
+    fetchCategory();
+  }, []);
+
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-    >
-      {/* <SortableContext items={urls} strategy={() => null}> */}
-      <SortableContext items={urls} strategy={rectSortingStrategy}>
-        <div
-          ref={contentRef}
-          className={cn("p-2 min-h-[19rem] glass", {
-            "bg-gray-100/20 rounded-3xl": isEditing,
-          })}
-        >
-          <ul className="grid grid-cols-[repeat(auto-fill,7rem)] justify-center gap-0">
-            {urls.map((item) => {
+    <>
+      <div className="absolute top-0 bottom-0 left-0 flex flex-col justify-center">
+        <div className="ml-4 p-2 glass">
+          <ul className="text-white text-sm space-y-2">
+            {categorys.map((category) => {
               return (
-                <SortableItem key={item.id} id={item.id} disabled={!isEditing}>
-                  <MainContextMenu
-                    menuItems={getContextMenuItems(item)}
-                    updateMenuItem={(menuItem) =>
-                      menuItem.id && updateMenuItem(menuItem.id, menuItem)
+                <li
+                  key={category.id}
+                  className={cn(
+                    "nowrap flex items-center gap-2 cursor-pointer hover:glass rounded-full p-4",
+                    {
+                      "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
+                        category.name === activeCategory,
                     }
-                  >
-                    <NavItem item={item} isEditing={isEditing} />
-                  </MainContextMenu>
-                </SortableItem>
+                  )}
+                  onClick={() => setActiveCategory(category.name)}
+                >
+                  {category.name}
+                </li>
               );
             })}
-            {isEditing && (
-              <li>
-                <NavItem
-                  onClick={() => {
-                    addLinkmodal
-                      .show()
-                      .then(() => {
-                        fetchUrls();
-                      })
-                      .catch(() => {
-                        alert("添加失败");
-                      });
-                  }}
-                  item={{
-                    title: "添加",
-                  }}
-                  icon={<PlusIcon className="w-6 h-6" />}
-                  isEditing={isEditing}
-                />
-              </li>
-            )}
+            <li>
+              <div
+                className={cn(
+                  "nowrap flex items-center gap-2 cursor-pointer hover:glass rounded-full p-4",
+                  {
+                    "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
+                      activeCategory === null,
+                  }
+                )}
+                onClick={() => setActiveCategory(null)}
+              >
+                未分类
+              </div>
+            </li>
           </ul>
         </div>
-      </SortableContext>
-    </DndContext>
+      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+      >
+        {/* <SortableContext items={urls} strategy={() => null}> */}
+        <SortableContext items={urls} strategy={rectSortingStrategy}>
+          <div
+            ref={contentRef}
+            className={cn("p-2 min-h-[19rem] glass", {
+              "bg-gray-100/20 rounded-3xl": isEditing,
+            })}
+          >
+            <ul className="grid grid-cols-[repeat(auto-fill,7rem)] justify-center gap-0">
+              {urls
+                .filter((item) => {
+                  return activeCategory
+                    ? item.category === activeCategory
+                    : !item.category;
+                })
+                .map((item) => {
+                  return (
+                    <SortableItem
+                      key={item.id}
+                      id={item.id}
+                      disabled={!isEditing}
+                    >
+                      <MainContextMenu
+                        menuItems={getContextMenuItems(item)}
+                        updateMenuItem={(menuItem) =>
+                          menuItem.id && updateMenuItem(menuItem.id, menuItem)
+                        }
+                      >
+                        <NavItem item={item} isEditing={isEditing} />
+                      </MainContextMenu>
+                    </SortableItem>
+                  );
+                })}
+              {isEditing && (
+                <li>
+                  <NavItem
+                    onClick={() => {
+                      addLinkmodal
+                        .show()
+                        .then(() => {
+                          fetchUrls();
+                        })
+                        .catch(() => {
+                          alert("添加失败");
+                        });
+                    }}
+                    item={{
+                      title: "添加",
+                    }}
+                    icon={<PlusIcon className="w-6 h-6" />}
+                    isEditing={isEditing}
+                  />
+                </li>
+              )}
+            </ul>
+          </div>
+        </SortableContext>
+      </DndContext>
+    </>
   );
 };
