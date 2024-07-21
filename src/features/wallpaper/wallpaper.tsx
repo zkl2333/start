@@ -9,6 +9,22 @@ export interface WallpaperRef {
   prev: () => void;
 }
 
+const bingWallpaperLoader = ({
+  src,
+  width,
+}: {
+  src: string;
+  width: number;
+}) => {
+  const url = new URL(src);
+  const id = url.searchParams.get("id")!.match(/(.+?)_UHD\.jpg/)![1];
+  url.hostname = "cn.bing.com";
+  const size = width > 1920 ? "UHD" : "1920x1080";
+  const newId = `${id}_${size}.jpg`;
+  url.searchParams.set("id", newId);
+  return url.toString();
+};
+
 const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   const [wallpapers, setWallpapers] = useState<Record<
     DateString,
@@ -59,6 +75,8 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
       {currentWallpaper && (
         <>
           <Image
+            priority
+            loader={bingWallpaperLoader}
             className="w-full h-full object-cover"
             src={currentWallpaper.url}
             alt={currentWallpaper.copyright}
