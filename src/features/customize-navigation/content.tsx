@@ -207,7 +207,7 @@ export const Content = ({
                 <li
                   key={category.id}
                   className={cn(
-                    "nowrap flex items-center gap-2 cursor-pointer hover:glass rounded-full p-4",
+                    "nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4",
                     {
                       "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
                         category.name === activeCategory,
@@ -222,7 +222,7 @@ export const Content = ({
             <li>
               <div
                 className={cn(
-                  "nowrap flex items-center gap-2 cursor-pointer hover:glass rounded-full p-4",
+                  "nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4",
                   {
                     "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
                       activeCategory === null,

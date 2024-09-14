@@ -173,6 +173,7 @@ const formSchema = z.object({
     .optional(),
   iconUrl: z.string().optional(),
   iconWrapper: z.boolean().optional(),
+  category: z.string().optional(),
 });
 
 const AddLinkModal = NiceModal.create(
@@ -406,6 +407,20 @@ const AddLinkModal = NiceModal.create(
                         当图标较小时，添加一个背景色以增加可见性。
                       </FormDescription>
                     </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>分类</FormLabel>
+                    <FormControl>
+                      <Input placeholder="分类" {...field} />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

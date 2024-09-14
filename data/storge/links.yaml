@@ -140,7 +140,7 @@
 - id: 3dca06fe-42ec-47c2-a23a-fd103e8cdb19
   title: manifest-generator
   url: https://www.simicart.com/manifest-generator.html/
-  iconUrl: https://www.simicart.com/skin/frontend/default/simicart2.0/css/2017/images/icon-logo.png
+  iconUrl: https://simicart.com/wp-content/uploads/cropped-icon-logo-2-180x180.png
   iconWrapper: false
   category: 首页
 - id: d2d0c094-cc16-43bc-ab47-117209959054
@@ -178,8 +178,8 @@
 - id: 40b03608-5b6d-4a4f-bf6e-e12565fe290b
   title: cults3d
   url: https://cults3d.com/
-  iconUrl: https://assets.cults3d.com/assets/favicons/cults-e19f0b01f785a57ca7e0a5aeb5b365ea8255e2d52389045f7049e470499130b4.ico
-  iconWrapper: true
+  iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fcults3d.com%2F&size=256
+  iconWrapper: false
   category: 首页
 - id: 75afb0f7-6294-41f8-b237-6d364aa1c925
   url: https://dribbble.com/
