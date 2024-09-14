@@ -1,12 +1,11 @@
 import { ISiteMeta } from "@/app/api/site-info/route";
 import { cn } from "@/lib/utils";
 import { useCoreStore } from "@/providers/core-store-provider";
-import Image from "next/image";
 import { INavItem } from "../types";
 import SiteIcon from "./icon";
 import useSWRImmutable from "swr/immutable";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMemo } from "react";
+import { MouseEvent, useMemo } from "react";
 
 function faviconURL(u: string) {
   const url = new URL("https://t0.gstatic.com/faviconV2");
@@ -63,12 +62,14 @@ const IconRenderer = ({
 const NavItem = ({
   item,
   icon,
+  isDragging,
   isEditing,
   onClick,
 }: {
   item: Partial<INavItem>;
   icon?: React.ReactNode;
   isEditing: boolean;
+  isDragging?: boolean;
   onClick?: () => void;
 }) => {
   const hasImage = useCoreStore((state) =>
@@ -109,10 +110,24 @@ const NavItem = ({
     return <IconRenderer cardMeta={cardMeta} url={item.url!} />;
   };
 
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (isDragging) {
+      // 如果正在拖拽，阻止点击事件
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
+    // 如果有自定义的 onClick，则调用它
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <a
       href={item.url}
-      onClick={onClick}
+      onClick={handleClick}
       target="_blank"
       rel="noreferrer noopener"
       className={cn(
