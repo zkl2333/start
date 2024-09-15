@@ -1,5 +1,4 @@
-// components/NavGrid.tsx
-import React, { useCallback } from "react";
+import React from "react";
 import { Responsive, WidthProvider, Layouts, Layout } from "react-grid-layout";
 import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
 import NavItem from "./nav-item";
@@ -7,6 +6,8 @@ import { INavItem } from "../types";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useModal } from "@ebay/nice-modal-react";
 import AddLinkModal from "../addDialog";
+import "/node_modules/react-grid-layout/css/styles.css";
+import "/node_modules/react-resizable/css/styles.css";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -19,6 +20,8 @@ interface NavGridProps {
   getContextMenuItems: (item: INavItem) => MenuItem[];
   updateMenuItem: (id: string, contextMenu: MenuItem) => void;
   fetchUrls: () => void;
+  breakpoints: Record<string, number>;
+  cols: Record<string, number>;
 }
 
 const NavGrid: React.FC<NavGridProps> = ({
@@ -30,6 +33,8 @@ const NavGrid: React.FC<NavGridProps> = ({
   getContextMenuItems,
   updateMenuItem,
   fetchUrls,
+  breakpoints,
+  cols,
 }) => {
   const addLinkModal = useModal(AddLinkModal);
 
@@ -37,24 +42,11 @@ const NavGrid: React.FC<NavGridProps> = ({
     <ResponsiveGridLayout
       className="layout"
       layouts={layouts}
-      breakpoints={{
-        lg: 1200,
-        md: 996,
-        sm: 768,
-        xs: 480,
-        xxs: 0,
-      }}
-      cols={{
-        lg: 12,
-        md: 10,
-        sm: 8,
-        xs: 6,
-        xxs: 4,
-      }}
+      breakpoints={breakpoints}
+      cols={cols}
       rowHeight={100}
-      autoSize
       isDraggable={isEditing}
-      isResizable={false}
+      isResizable={isEditing}
       onLayoutChange={onLayoutChange}
     >
       {urls
@@ -62,7 +54,10 @@ const NavGrid: React.FC<NavGridProps> = ({
           activeCategory ? item.category === activeCategory : !item.category
         )
         .map((item) => (
-          <div key={item.id}>
+          <div
+            key={item.id}
+            className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
+          >
             <MainContextMenu
               menuItems={getContextMenuItems(item)}
               updateMenuItem={(menuItem) =>
@@ -74,7 +69,10 @@ const NavGrid: React.FC<NavGridProps> = ({
           </div>
         ))}
       {isEditing && (
-        <div key="add-button">
+        <div
+          key="add-button"
+          className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
+        >
           <NavItem
             onClick={() => {
               addLinkModal

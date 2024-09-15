@@ -18,6 +18,17 @@ import { INavItem } from "./types";
 import { useModal } from "@ebay/nice-modal-react";
 import AddLinkModal from "./addDialog";
 
+const breakpoints: Record<string, number> = {
+  lg: 1200,
+  md: 768,
+  xxs: 0,
+};
+const cols: Record<string, number> = {
+  lg: 12,
+  md: 8,
+  xxs: 4,
+};
+
 const Content = ({
   globalMenuItems,
   updateMenuItem,
@@ -40,7 +51,6 @@ const Content = ({
   const [layoutsPerCategory, setLayoutsPerCategory] = useLocalStorage<
     Record<string, Layouts>
   >("layoutsPerCategory", {});
-  const [layouts, setLayouts] = useState<Layouts>({});
 
   const contextMenu = useMemo<MenuItem | null>(
     () => getContextMenu("customizeNavigationEditingMode", globalMenuItems),
@@ -119,29 +129,12 @@ const Content = ({
     [globalMenuItems, fetchUrls, addLinkmodal]
   );
 
-  const addLinkModal = useModal(AddLinkModal);
-
   const generateLayoutsForCategory = useCallback(
     (category: string | null): Layouts => {
       const newLayouts: Layouts = {};
       const filteredUrls = urls.filter((item) =>
         category ? item.category === category : !item.category
       );
-
-      const breakpoints: Record<string, number> = {
-        lg: 1200,
-        md: 996,
-        sm: 768,
-        xs: 480,
-        xxs: 0,
-      };
-      const cols: Record<string, number> = {
-        lg: 12,
-        md: 10,
-        sm: 8,
-        xs: 6,
-        xxs: 4,
-      };
 
       Object.keys(cols).forEach((breakpoint) => {
         const colCount = cols[breakpoint];
@@ -181,11 +174,8 @@ const Content = ({
     if (!activeCategory && categories.length === 0) return;
     const categoryKey = activeCategory || "uncategorized";
     const categoryLayouts = layoutsPerCategory[categoryKey];
-    if (categoryLayouts) {
-      setLayouts(categoryLayouts);
-    } else {
+    if (!categoryLayouts) {
       const generatedLayouts = generateLayoutsForCategory(activeCategory);
-      setLayouts(generatedLayouts);
       setLayoutsPerCategory({
         ...layoutsPerCategory,
         [categoryKey]: generatedLayouts,
@@ -200,13 +190,18 @@ const Content = ({
   ]);
 
   const onLayoutChange = (currentLayout: Layout[], allLayouts: Layouts) => {
-    console.log("onLayoutChange", currentLayout, allLayouts);
-    // setLayouts(allLayouts);
-    // setLayoutsPerCategory({
-    //   ...layoutsPerCategory,
-    //   [activeCategory || "uncategorized"]: allLayouts,
-    // });
+    if (isEditing) {
+      console.log("onLayoutChange", currentLayout, allLayouts);
+      setLayoutsPerCategory({
+        ...layoutsPerCategory,
+        [activeCategory || "uncategorized"]: allLayouts,
+      });
+    }
   };
+
+  useEffect(() => {
+    console.log("isEditing", isEditing);
+  }, [isEditing]);
 
   if (urlsLoading || categoriesLoading) return <div>加载中...</div>;
   if (urlsError) return <div>错误: {urlsError}</div>;
@@ -232,11 +227,13 @@ const Content = ({
             urls={urls}
             activeCategory={activeCategory}
             isEditing={isEditing}
-            layouts={layouts}
+            layouts={layoutsPerCategory[activeCategory || "uncategorized"]}
             onLayoutChange={onLayoutChange}
             getContextMenuItems={getContextMenuItems}
             updateMenuItem={updateMenuItem}
             fetchUrls={fetchUrls}
+            breakpoints={breakpoints}
+            cols={cols}
           />
         )}
       </div>

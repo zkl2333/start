@@ -62,14 +62,12 @@ const IconRenderer = ({
 const NavItem = ({
   item,
   icon,
-  isDragging,
   isEditing,
   onClick,
 }: {
   item: Partial<INavItem>;
   icon?: React.ReactNode;
   isEditing: boolean;
-  isDragging?: boolean;
   onClick?: () => void;
 }) => {
   const hasImage = useCoreStore((state) =>
@@ -111,8 +109,7 @@ const NavItem = ({
   };
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    if (isDragging) {
-      // 如果正在拖拽，阻止点击事件
+    if (isEditing) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -131,9 +128,9 @@ const NavItem = ({
       target="_blank"
       rel="noreferrer noopener"
       className={cn(
-        "w-28 h-28 select-none flex flex-col items-center gap-2 justify-center hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl p-2 cursor-pointer",
+        "w-full h-full select-none flex flex-col items-center gap-2 justify-center p-2 cursor-pointer",
         {
-          "animate-wiggle": isEditing,
+          "animate-wiggle cursor-move": isEditing,
         }
       )}
     >
