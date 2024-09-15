@@ -1,5 +1,5 @@
 import { createFeature } from "@/stores/core-store";
-import { Content } from "./content";
+import Content from "./content";
 
 const customizeNavigation = createFeature({
   name: "自定义导航",
