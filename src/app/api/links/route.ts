@@ -61,6 +61,35 @@ export async function POST(request: Request) {
   );
 }
 
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const searchParams = new URL(request.url).searchParams;
+  const id = searchParams.get("id");
+
+  let links = await readData();
+  const index = links.findIndex((item: { id: any }) => item.id === id);
+
+  if (index === -1) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: "id not found",
+      }),
+      { status: 404 }
+    );
+  }
+
+  links[index] = { ...links[index], ...body };
+  await writeData(links);
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+    }),
+    { status: 200 }
+  );
+}
+
 export async function DELETE(request: Request) {
   const searchParams = new URL(request.url).searchParams;
   const id = searchParams.get("id");

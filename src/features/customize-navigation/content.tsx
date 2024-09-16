@@ -122,11 +122,36 @@ const Content = ({
         },
       },
       {
+        type: "sub",
+        label: "移动到",
+        inset: true,
+        children: categories.map((category) => ({
+          type: "item",
+          label: category.name,
+          inset: true,
+          onSelect: () => {
+            fetch(`/api/links?id=${item.id}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ category: category.name }),
+            })
+              .then(() => {
+                fetchUrls();
+              })
+              .catch(() => {
+                alert("移动失败");
+              });
+          },
+        })),
+      },
+      {
         type: "separator",
       },
       ...globalMenuItems,
     ],
-    [globalMenuItems, fetchUrls, addLinkmodal]
+    [categories, globalMenuItems, fetchUrls, addLinkmodal]
   );
 
   const generateLayoutsForCategory = useCallback(
@@ -224,8 +249,9 @@ const Content = ({
       >
         {urls.length && (
           <NavGrid
-            urls={urls}
-            activeCategory={activeCategory}
+            urls={urls.filter((item) =>
+              activeCategory ? item.category === activeCategory : !item.category
+            )}
             isEditing={isEditing}
             layouts={layoutsPerCategory[activeCategory || "uncategorized"]}
             onLayoutChange={onLayoutChange}

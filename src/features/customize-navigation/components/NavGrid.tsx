@@ -13,7 +13,6 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 interface NavGridProps {
   urls: INavItem[];
-  activeCategory: string | null;
   isEditing: boolean;
   layouts: Layouts;
   onLayoutChange: (currentLayout: Layout[], allLayouts: Layouts) => void;
@@ -26,7 +25,6 @@ interface NavGridProps {
 
 const NavGrid: React.FC<NavGridProps> = ({
   urls,
-  activeCategory,
   isEditing,
   layouts,
   onLayoutChange,
@@ -48,26 +46,23 @@ const NavGrid: React.FC<NavGridProps> = ({
       isDraggable={isEditing}
       isResizable={isEditing}
       onLayoutChange={onLayoutChange}
+      compactType="horizontal"
     >
-      {urls
-        .filter((item) =>
-          activeCategory ? item.category === activeCategory : !item.category
-        )
-        .map((item) => (
-          <div
-            key={item.id}
-            className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
+      {urls.map((item) => (
+        <div
+          key={item.id}
+          className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
+        >
+          <MainContextMenu
+            menuItems={getContextMenuItems(item)}
+            updateMenuItem={(menuItem) =>
+              menuItem.id && updateMenuItem(menuItem.id, menuItem)
+            }
           >
-            <MainContextMenu
-              menuItems={getContextMenuItems(item)}
-              updateMenuItem={(menuItem) =>
-                menuItem.id && updateMenuItem(menuItem.id, menuItem)
-              }
-            >
-              <NavItem item={item} isEditing={isEditing} />
-            </MainContextMenu>
-          </div>
-        ))}
+            <NavItem item={item} isEditing={isEditing} />
+          </MainContextMenu>
+        </div>
+      ))}
       {isEditing && (
         <div
           key="add-button"
