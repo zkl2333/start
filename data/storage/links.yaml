@@ -112,37 +112,37 @@
   url: https://vant-ui.github.io/vant-weapp/#/home
   iconUrl: https://img.yzcdn.cn/vant/logo.png
   iconWrapper: true
-  category: 首页
+  category: ui
 - id: b4ec8b4a-a15b-4d63-9ae6-e993d88ff5de
   title: carbon
   url: https://carbon.now.sh/
   iconUrl: https://carbon.now.sh/favicon.ico
   iconWrapper: false
-  category: 首页
+  category: 代码
 - id: ad1286a5-48aa-44fd-9f03-49b00a19bac0
   title: composerize
   url: https://www.composerize.com/
   iconUrl: https://www.composerize.com/favicon.ico
   iconWrapper: false
-  category: 首页
+  category: 代码
 - id: 0a03b988-f8c5-45d8-ae42-66751fd4aef6
   title: decomposerize
   url: https://www.decomposerize.com/
   iconUrl: https://www.decomposerize.com/favicon.ico
   iconWrapper: false
-  category: 首页
+  category: 代码
 - id: 098c9fb9-f9e6-4c6f-a0cf-f3a09da76597
   title: JSON 格式化
   url: https://www.huatools.com/
   iconUrl: https://www.huatools.com/img/favicon.ico
   iconWrapper: false
-  category: 首页
+  category: 代码
 - id: 3dca06fe-42ec-47c2-a23a-fd103e8cdb19
   title: manifest-generator
   url: https://www.simicart.com/manifest-generator.html/
   iconUrl: https://simicart.com/wp-content/uploads/cropped-icon-logo-2-180x180.png
   iconWrapper: false
-  category: 首页
+  category: 代码
 - id: d2d0c094-cc16-43bc-ab47-117209959054
   title: 文本对比
   url: https://tool.lu/diff/
@@ -154,7 +154,7 @@
   url: https://www.deepl.com/zh/translator
   iconUrl: https://static.deepl.com/img/apple-touch-icon.png
   iconWrapper: false
-  category: 首页
+  category: translate
 - id: 8cf30308-a48a-45b9-8af5-3ebfacc00858
   title: 变量取名
   url: https://unbug.github.io/codelf/
@@ -220,6 +220,7 @@
   url: https://dev.libkit.cn/css-to-tailwind
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fdev.libkit.cn%2Fcss-to-tailwind&size=256
   iconWrapper: true
+  category: 代码
 - id: abca9c4b-e4b3-4f48-8192-76ceb946a5bd
   title: daisyui
   url: https://daisyui.com
@@ -248,3 +249,9 @@
   url: https://www.figma.com/proto/Xy7BoXqo5Qt4p3x1ZABUlt/%E5%AF%BC%E8%88%AA?page-id=0%3A1&node-id=0-615&viewport=807%2C341%2C0.4&t=qT6LHpQllwTdDass-1&scaling=min-zoom&content-scaling=fixed
   iconUrl: https://static.figma.com/app/icon/1/touch-76.png
   iconWrapper: false
+- id: db203cbf-f4d0-4cbb-bbb4-b0c406eee45d
+  title: ChatGPT
+  url: https://chatgpt.com/
+  iconUrl: https://cdn.oaistatic.com/assets/apple-touch-icon-mz9nytnj.webp
+  iconWrapper: false
+  category: 首页

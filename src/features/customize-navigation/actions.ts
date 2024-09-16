@@ -7,7 +7,7 @@ import { promises as fs } from "fs";
 
 // 数据文件路径
 const dataFileName = "category.yaml";
-const dataFilePath = path.join(process.cwd(), "data/storge", dataFileName);
+const dataFilePath = path.join(process.cwd(), "data/storage", dataFileName);
 
 // 检查文件和文件夹是否存在
 async function checkFileAndDir() {

@@ -37,57 +37,59 @@ const NavGrid: React.FC<NavGridProps> = ({
   const addLinkModal = useModal(AddLinkModal);
 
   return (
-    <ResponsiveGridLayout
-      className="layout"
-      layouts={layouts}
-      breakpoints={breakpoints}
-      cols={cols}
-      rowHeight={100}
-      isDraggable={isEditing}
-      isResizable={isEditing}
-      onLayoutChange={onLayoutChange}
-      compactType="horizontal"
-    >
-      {urls.map((item) => (
-        <div
-          key={item.id}
-          className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
-        >
-          <MainContextMenu
-            menuItems={getContextMenuItems(item)}
-            updateMenuItem={(menuItem) =>
-              menuItem.id && updateMenuItem(menuItem.id, menuItem)
-            }
+    <>
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={layouts}
+        breakpoints={breakpoints}
+        cols={cols}
+        rowHeight={100}
+        isDraggable={isEditing}
+        isResizable={isEditing}
+        onLayoutChange={onLayoutChange}
+        compactType="horizontal"
+      >
+        {urls.map((item) => (
+          <div
+            key={item.id}
+            className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
           >
-            <NavItem item={item} isEditing={isEditing} />
-          </MainContextMenu>
-        </div>
-      ))}
-      {isEditing && (
-        <div
-          key="add-button"
-          className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
-        >
-          <NavItem
-            onClick={() => {
-              addLinkModal
-                .show()
-                .then(() => {
-                  fetchUrls();
-                })
-                .catch(() => {
-                  alert("添加失败");
-                });
-            }}
-            item={{
-              title: "添加",
-            }}
-            icon={<PlusIcon className="w-6 h-6" />}
-            isEditing={isEditing}
-          />
-        </div>
-      )}
-    </ResponsiveGridLayout>
+            <MainContextMenu
+              menuItems={getContextMenuItems(item)}
+              updateMenuItem={(menuItem) =>
+                menuItem.id && updateMenuItem(menuItem.id, menuItem)
+              }
+            >
+              <NavItem item={item} isEditing={isEditing} />
+            </MainContextMenu>
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+      <div>
+        {isEditing && (
+          <div
+            key="add-button"
+            className="bg-gray-300/10 hover:backdrop-blur-sm rounded-xl w-20 p-2 m-4 text-gray-200 flex items-center justify-center cursor-pointer"
+          >
+            <PlusIcon className="w-6 h-6" />
+            <div
+              onClick={() => {
+                addLinkModal
+                  .show()
+                  .then(() => {
+                    fetchUrls();
+                  })
+                  .catch(() => {
+                    alert("添加失败");
+                  });
+              }}
+            >
+              添加
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
