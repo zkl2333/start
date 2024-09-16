@@ -208,8 +208,8 @@ const Content = ({
   if (categoriesError) return <div>错误: {categoriesError}</div>;
 
   return (
-    <>
-      <div className="absolute top-0 bottom-0 left-0 flex flex-col justify-center">
+    <div className="flex flex-col md:flex-row gap-2">
+      <div className="md:w-28 w-full">
         <CategoryList
           categories={categories}
           activeCategory={activeCategory}
@@ -218,7 +218,7 @@ const Content = ({
       </div>
       <div
         ref={contentRef}
-        className={cn("p-2 min-h-[19rem] glass", {
+        className={cn("flex-1 p-2 min-h-[19rem] glass", {
           "bg-gray-100/20 rounded-3xl": isEditing,
         })}
       >
@@ -237,7 +237,8 @@ const Content = ({
           />
         )}
       </div>
-    </>
+      <div className="w-28 hidden xl:block" />
+    </div>
   );
 };
 

@@ -15,13 +15,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
   setActiveCategory,
 }) => {
   return (
-    <div className="ml-4 p-2 glass">
-      <ul className="text-white text-sm space-y-2">
+    <div className="p-2 glass">
+      <ul className="text-white text-sm gap-2 flex flex-row md:flex-col rounded-2xl overflow-auto">
         {categories.map((category) => (
           <li
             key={category.id}
             className={cn(
-              "nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4",
+              "w-24 md:w-full nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4 text-nowrap flex-shrink-0",
               {
                 "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
                   category.name === activeCategory,
@@ -32,19 +32,17 @@ const CategoryList: React.FC<CategoryListProps> = ({
             {category.name}
           </li>
         ))}
-        <li>
-          <div
-            className={cn(
-              "nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4",
-              {
-                "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
-                  activeCategory === null,
-              }
-            )}
-            onClick={() => setActiveCategory(null)}
-          >
-            未分类
-          </div>
+        <li
+          className={cn(
+            "w-24 md:w-full nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4 text-nowrap flex-shrink-0",
+            {
+              "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
+                activeCategory === null,
+            }
+          )}
+          onClick={() => setActiveCategory(null)}
+        >
+          未分类
         </li>
       </ul>
     </div>
