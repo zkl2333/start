@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 
 interface CategoryListProps {
   categories: ICategory[];
-  activeCategory: string | null;
-  setActiveCategory: (category: string | null) => void;
+  activeCategory: string;
+  setActiveCategory: (category: string) => void;
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({
@@ -37,10 +37,10 @@ const CategoryList: React.FC<CategoryListProps> = ({
             "w-24 md:w-full nowrap flex items-center justify-center gap-2 cursor-pointer hover:glass rounded-full p-4 text-nowrap flex-shrink-0",
             {
               "bg-[#FF5682]/90 hover:bg-[#FF5682] glass":
-                activeCategory === null,
+                activeCategory === "uncategorized",
             }
           )}
-          onClick={() => setActiveCategory(null)}
+          onClick={() => setActiveCategory("uncategorized")}
         >
           未分类
         </li>

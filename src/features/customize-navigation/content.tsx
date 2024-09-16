@@ -10,7 +10,7 @@ import CategoryList from "./components/CategoryList";
 import NavGrid from "./components/NavGrid";
 import useFetchUrls from "./hooks/useFetchUrls";
 import useFetchCategories from "./hooks/useFetchCategories";
-import useLocalStorage from "./hooks/useLocalStorage";
+import useLayoutsPerCategoryStorage from "./hooks/useLayoutsPerCategoryStorage";
 import { getContextMenu } from "@/components/main-context-menu";
 import { cn } from "@/lib/utils";
 import { Layout, Layouts } from "react-grid-layout";
@@ -19,12 +19,12 @@ import { useModal } from "@ebay/nice-modal-react";
 import AddLinkModal from "./addDialog";
 
 const breakpoints: Record<string, number> = {
-  lg: 1200,
+  lg: 1000,
   md: 768,
   xxs: 0,
 };
 const cols: Record<string, number> = {
-  lg: 12,
+  lg: 10,
   md: 8,
   xxs: 4,
 };
@@ -47,10 +47,14 @@ const Content = ({
     loading: categoriesLoading,
     error: categoriesError,
   } = useFetchCategories();
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [layoutsPerCategory, setLayoutsPerCategory] = useLocalStorage<
-    Record<string, Layouts>
-  >("layoutsPerCategory", {});
+  const [activeCategory, setActiveCategory] = useState<string>("uncategorized");
+
+  const {
+    layoutsPerCategory,
+    setLayoutsPerCategory,
+    loading: layoutsLoading,
+    error: layoutsError,
+  } = useLayoutsPerCategoryStorage();
 
   const contextMenu = useMemo<MenuItem | null>(
     () => getContextMenu("customizeNavigationEditingMode", globalMenuItems),
@@ -171,22 +175,12 @@ const Content = ({
           h: 1,
         }));
 
-        if (isEditing) {
-          layout.push({
-            i: "add-button",
-            x: layout.length % colCount,
-            y: Math.floor(layout.length / colCount),
-            w: 1,
-            h: 1,
-          });
-        }
-
         newLayouts[breakpoint] = layout;
       });
 
       return newLayouts;
     },
-    [urls, isEditing]
+    [urls]
   );
 
   useEffect(() => {
@@ -196,22 +190,23 @@ const Content = ({
   }, [categories]);
 
   useEffect(() => {
-    if (!activeCategory && categories.length === 0) return;
-    const categoryKey = activeCategory || "uncategorized";
-    const categoryLayouts = layoutsPerCategory[categoryKey];
-    if (!categoryLayouts) {
-      const generatedLayouts = generateLayoutsForCategory(activeCategory);
-      setLayoutsPerCategory({
-        ...layoutsPerCategory,
-        [categoryKey]: generatedLayouts,
-      });
+    if (!layoutsLoading) {
+      if (layoutsPerCategory[activeCategory]) {
+        return;
+      } else {
+        setLayoutsPerCategory({
+          ...layoutsPerCategory,
+          [activeCategory]: generateLayoutsForCategory(activeCategory),
+        });
+      }
     }
   }, [
+    urls,
     activeCategory,
-    layoutsPerCategory,
     generateLayoutsForCategory,
-    categories.length,
     setLayoutsPerCategory,
+    layoutsPerCategory,
+    layoutsLoading,
   ]);
 
   const onLayoutChange = (currentLayout: Layout[], allLayouts: Layouts) => {
@@ -219,18 +214,16 @@ const Content = ({
       console.log("onLayoutChange", currentLayout, allLayouts);
       setLayoutsPerCategory({
         ...layoutsPerCategory,
-        [activeCategory || "uncategorized"]: allLayouts,
+        [activeCategory]: allLayouts,
       });
     }
   };
 
-  useEffect(() => {
-    console.log("isEditing", isEditing);
-  }, [isEditing]);
-
-  if (urlsLoading || categoriesLoading) return <div>加载中...</div>;
+  if (urlsLoading || categoriesLoading || layoutsLoading)
+    return <div>加载中...</div>;
   if (urlsError) return <div>错误: {urlsError}</div>;
   if (categoriesError) return <div>错误: {categoriesError}</div>;
+  if (layoutsError) return <div>错误: {layoutsError}</div>;
 
   return (
     <div className="flex flex-col md:flex-row gap-2">
@@ -250,10 +243,12 @@ const Content = ({
         {urls.length && (
           <NavGrid
             urls={urls.filter((item) =>
-              activeCategory ? item.category === activeCategory : !item.category
+              activeCategory !== "uncategorized"
+                ? item.category === activeCategory
+                : !item.category
             )}
             isEditing={isEditing}
-            layouts={layoutsPerCategory[activeCategory || "uncategorized"]}
+            layouts={layoutsPerCategory[activeCategory]}
             onLayoutChange={onLayoutChange}
             getContextMenuItems={getContextMenuItems}
             updateMenuItem={updateMenuItem}

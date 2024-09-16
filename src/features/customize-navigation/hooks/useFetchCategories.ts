@@ -1,4 +1,3 @@
-// hooks/useFetchCategories.ts
 import { useState, useEffect } from "react";
 import { ICategory } from "../types";
 import { getCategorys } from "../actions";

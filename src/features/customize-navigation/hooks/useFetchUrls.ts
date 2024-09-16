@@ -1,4 +1,3 @@
-// hooks/useFetchUrls.ts
 import { useState, useEffect } from "react";
 import { INavItem } from "../types";
 
