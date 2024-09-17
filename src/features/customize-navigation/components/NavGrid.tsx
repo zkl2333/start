@@ -35,12 +35,18 @@ const NavGrid: React.FC<NavGridProps> = ({
   cols,
 }) => {
   const addLinkModal = useModal(AddLinkModal);
+  const [breakpoint, setBreakpoint] = React.useState("lg");
+
+  const getGridData = (id: string) => {
+    const layout = layouts[breakpoint];
+    const data = layout.find((item) => item.i === id);
+    return data;
+  };
 
   return (
     <>
       <ResponsiveGridLayout
         className="layout"
-        layouts={layouts}
         breakpoints={breakpoints}
         cols={cols}
         rowHeight={100}
@@ -48,11 +54,13 @@ const NavGrid: React.FC<NavGridProps> = ({
         isResizable={isEditing}
         onLayoutChange={onLayoutChange}
         compactType="horizontal"
+        onBreakpointChange={(newBreakpoint) => setBreakpoint(newBreakpoint)}
       >
         {urls.map((item) => (
           <div
             key={item.id}
             className="hover:bg-gray-300/10 hover:backdrop-blur-sm rounded-xl"
+            data-grid={layouts && getGridData(item.id)}
           >
             <MainContextMenu
               menuItems={getContextMenuItems(item)}

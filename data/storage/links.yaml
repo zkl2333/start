@@ -255,3 +255,10 @@
   iconUrl: https://cdn.oaistatic.com/assets/apple-touch-icon-mz9nytnj.webp
   iconWrapper: false
   category: 首页
+- id: 17140165-474a-4301-a115-4d6e53717b2c
+  title: MDC-NG
+  url: http://192.168.31.32:9208/
+  iconUrl: http://192.168.31.32:9208/favicon.ico
+  iconWrapper: false
+  category: 首页
+  type: mdcng
