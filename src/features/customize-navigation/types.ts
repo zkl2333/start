@@ -8,11 +8,6 @@ export interface INavItem {
   iconWrapper?: boolean | undefined;
 }
 
-export interface ICategory {
-  id: string;
-  name: string;
-}
-
 export interface MenuItem {
   type: string;
   label?: string;

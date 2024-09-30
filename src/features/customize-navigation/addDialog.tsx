@@ -192,15 +192,23 @@ const AddLinkModal = NiceModal.create(
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-      await fetch("/api/links", {
-        method: defaultValues.id ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-          defaultValues.id ? { ...values, id: defaultValues.id } : values
-        ),
-      });
+      if (defaultValues.id) {
+        await fetch(`/api/links?id=${defaultValues.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+      } else {
+        await fetch(`/api/links`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
+      }
 
       await handlerClose();
     }
@@ -411,7 +419,7 @@ const AddLinkModal = NiceModal.create(
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
@@ -423,7 +431,7 @@ const AddLinkModal = NiceModal.create(
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <DialogFooter>
                 <Button type="submit">保存</Button>
               </DialogFooter>

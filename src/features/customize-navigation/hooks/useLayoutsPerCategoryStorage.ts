@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLayouts, saveLayouts } from "../actions";
+import { getLayoutsAction, saveLayoutsAction } from "../actions";
 import { Layouts } from "react-grid-layout";
 
 function useLayoutsPerCategoryStorage() {
@@ -11,7 +11,7 @@ function useLayoutsPerCategoryStorage() {
 
   const fetchLayouts = async () => {
     try {
-      const data = await getLayouts();
+      const data = await getLayoutsAction();
       _setLayoutsPerCategory(data);
     } catch (err: any) {
       setError(err.message || "获取布局失败");
@@ -22,7 +22,7 @@ function useLayoutsPerCategoryStorage() {
 
   const setLayoutsPerCategory = async (layouts: Record<string, Layouts>) => {
     _setLayoutsPerCategory(layouts);
-    await saveLayouts(layouts);
+    await saveLayoutsAction(layouts);
   };
 
   useEffect(() => {

@@ -3,19 +3,13 @@
   url: https://www.baidu.com
   iconUrl: https://psstatic.cdn.bcebos.com/video/wiseindex/aa6eef91f8b5b1a33b454c401_1660835115000.png
   iconWrapper: false
-  category: 首页
+  category: null
 - id: 91fe9e90-cedf-428b-bafb-abbe4991c77c
   title: 谷歌
   url: https://www.google.com
   iconUrl: https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png
   iconWrapper: true
-  category: 首页
-- id: 4f6c0f80-26a3-4bde-b56d-f107c2460bb8
-  title: bilibili
-  url: https://www.bilibili.com/
-  iconUrl: https://i0.hdslb.com/bfs/static/jinkela/long/images/512.png
-  iconWrapper: false
-  category: 影视
+  category: null
 - id: 73addab1-8764-4646-8bfd-5d912a55ab4a
   title: github
   url: https://github.com/
@@ -25,35 +19,35 @@
 - id: e1a9c7a1-a6a5-486b-8387-7c9b8cea0c5a
   url: https://ui.shadcn.com/
   title: shadcn
-  category: ui
+  category: null
 - id: 3dba77ee-6ad8-4302-a7bb-bc4ddf233525
   title: dndkit
   url: https://dndkit.com/
   iconUrl: https://dndkit.com/apple-touch-icon.png
   iconWrapper: false
-  category: ui
+  category: null
 - id: e05d8b14-3434-4330-8830-1965e36019c1
   title: tailwindcss
   url: https://tailwindcss.com/
   iconUrl: https://tailwindcss.com/favicons/apple-touch-icon.png?v=3
   iconWrapper: false
-  category: ui
+  category: null
 - id: 2aa03502-857c-48bc-b97f-d29f25bb4fc0
   url: https://emojigraph.org/zh-hans/
   title: 表情符号
-  category: emoji
+  category: c3795970-5abc-429f-9f18-a77aa4ca7882
 - id: 317254c5-3330-4ff7-b303-edbfec334c24
   title: 谷歌翻译
   url: https://translate.google.com/
   iconUrl: https://www.gstatic.com/translate/favicon.ico
   iconWrapper: false
-  category: translate
+  category: null
 - id: 08be2758-6edb-4547-96bc-c57fc612cecd
   title: nextjs
   url: https://nextjs.org/
   iconUrl: https://nextjs.org/favicon.ico
   iconWrapper: true
-  category: 代码
+  category: null
 - id: a41b5f22-cb8e-479b-a822-fc57ff1a694b
   title: zustand
   url: https://docs.pmnd.rs/zustand/getting-started/introduction
@@ -71,7 +65,7 @@
   url: https://bbs.nga.cn/
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fbbs.nga.cn%2F&size=256
   iconWrapper: true
-  category: 首页
+  category: null
 - id: 2e7c05d9-25ec-48a6-840d-25b409f6d9d2
   url: https://mp.weixin.qq.com/
   title: 微信开放平台
@@ -89,18 +83,19 @@
   url: https://segmentfault.com/
   iconUrl: https://static.segmentfault.com/main_site_next/4ade9741/_next/static/media/sf-icon-small.4d244289.svg
   iconWrapper: false
-  category: 首页
+  category: null
 - id: 41b02f03-c4e9-409e-a30d-6b9afd8db531
   title: v2ex
   url: https://v2ex.com/
   iconUrl: https://v2ex.com/static/apple-touch-icon-180.png?v=91e795b8b5d9e2cbf2d886c3d4b7d63c
   iconWrapper: false
+  category: null
 - id: bf53036d-2ff7-44cc-8cc0-47dc9e627600
   title: 掘金
   url: https://juejin.cn/
   iconUrl: https://lf-web-assets.juejin.cn/obj/juejin-web/xitu_juejin_web/static/favicons/apple-touch-icon.png
   iconWrapper: false
-  category: 首页
+  category: 5c87ab34-1025-4b13-98fb-ebfdsdasb65e
 - id: 9b5e40aa-2b89-4f85-85ee-689dab0447bd
   title: rustwiki
   url: https://rustwiki.org/docs/
@@ -112,13 +107,13 @@
   url: https://vant-ui.github.io/vant-weapp/#/home
   iconUrl: https://img.yzcdn.cn/vant/logo.png
   iconWrapper: true
-  category: ui
+  category: 065c1e09-e31a-4878-9d8b-d2d6d7b682ca
 - id: b4ec8b4a-a15b-4d63-9ae6-e993d88ff5de
   title: carbon
   url: https://carbon.now.sh/
   iconUrl: https://carbon.now.sh/favicon.ico
   iconWrapper: false
-  category: 代码
+  category: 065c1e09-e31a-4878-9d8b-d2d6d7b682ca
 - id: ad1286a5-48aa-44fd-9f03-49b00a19bac0
   title: composerize
   url: https://www.composerize.com/
@@ -154,13 +149,13 @@
   url: https://www.deepl.com/zh/translator
   iconUrl: https://static.deepl.com/img/apple-touch-icon.png
   iconWrapper: false
-  category: translate
+  category: 04f251d6-ebd8-4f84-b288-cd1027d34446
 - id: 8cf30308-a48a-45b9-8af5-3ebfacc00858
   title: 变量取名
   url: https://unbug.github.io/codelf/
   iconUrl: https://unbug.github.io/codelf/images/codelf_logo.f4ae25bd.png
   iconWrapper: false
-  category: 首页
+  category: null
 - id: 27f44938-936d-46d1-bf89-3ba876a1c0c1
   title: makerworld
   url: https://makerworld.com/zh
@@ -260,5 +255,5 @@
   url: http://192.168.31.32:9208/
   iconUrl: http://192.168.31.32:9208/favicon.ico
   iconWrapper: false
-  category: 首页
+  category: 04f251d6-ebd8-4f84-b288-cd1027d34446
   type: mdcng

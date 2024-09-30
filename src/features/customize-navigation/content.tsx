@@ -17,6 +17,8 @@ import { Layout, Layouts } from "react-grid-layout";
 import { INavItem } from "./types";
 import { useModal } from "@ebay/nice-modal-react";
 import AddLinkModal from "./addDialog";
+import { ICategory } from "@/lib/category";
+import { addCategoryAction } from "./actions";
 
 const breakpoints: Record<string, number> = {
   lg: 1000,
@@ -28,6 +30,209 @@ const cols: Record<string, number> = {
   md: 8,
   xxs: 4,
 };
+
+// 获取某分类的链接
+const getFilteredUrls = (
+  urls: INavItem[],
+  categories: ICategory[],
+  categoryId: string
+): INavItem[] => {
+  const categoryExists = (id: string) =>
+    categories.some((category) => category.id === id);
+
+  return urls.filter((item) => {
+    if (categoryId === "uncategorized") {
+      return !item.category || !categoryExists(item.category);
+    } else {
+      return item.category === categoryId;
+    }
+  });
+};
+
+// 生成某分类的布局
+const generateLayoutsForCategory = (
+  urls: INavItem[],
+  categories: ICategory[],
+  categoryId: string
+): Layouts => {
+  const newLayouts: Layouts = {};
+  const filteredUrls = getFilteredUrls(urls, categories, categoryId);
+
+  Object.keys(cols).forEach((breakpoint) => {
+    const colCount = cols[breakpoint];
+    const layout = filteredUrls.map((item, index) => ({
+      i: item.id,
+      x: index % colCount,
+      y: Math.floor(index / colCount),
+      w: 1,
+      h: 1,
+    }));
+
+    newLayouts[breakpoint] = layout;
+  });
+
+  return newLayouts;
+};
+
+// 生成链接的右键菜单
+const generateNavItemContextMenu = (
+  item: INavItem,
+  categories: ICategory[],
+  globalMenuItems: MenuItem[],
+  fetchUrls: () => void,
+  addLinkModal: any,
+  reloadCategories: () => void
+): MenuItem[] => [
+  {
+    type: "item",
+    label: "删除",
+    inset: true,
+    onSelect: () => {
+      fetch(`/api/links?id=${item.id}`, {
+        method: "DELETE",
+      })
+        .then(() => {
+          fetchUrls();
+        })
+        .catch(() => {
+          alert("删除失败");
+        });
+    },
+  },
+  {
+    type: "item",
+    label: "编辑",
+    inset: true,
+    onSelect: () => {
+      addLinkModal
+        .show(item)
+        .then(() => {
+          fetchUrls();
+        })
+        .catch(() => {
+          alert("编辑失败");
+        });
+    },
+  },
+  {
+    type: "sub",
+    label: "移动到",
+    inset: true,
+    children: [
+      ...categories.map<MenuItem>((category) => ({
+        type: "item",
+        label: category.name,
+        inset: true,
+        onSelect: () => {
+          fetch(`/api/links?id=${item.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ category: category.id }), // 使用分类的 ID
+          })
+            .then(() => {
+              fetchUrls();
+              reloadCategories();
+            })
+            .catch(() => {
+              alert("移动失败");
+            });
+        },
+      })),
+      {
+        type: "item",
+        label: "新建分类",
+        inset: true,
+        onSelect: () => {
+          const newCategoryName = prompt("请输入新的分类名称");
+          if (newCategoryName)
+            addCategoryAction({ name: newCategoryName }).then((category) => {
+              fetch(`/api/links?id=${item.id}`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ category: category.id }), // 移动到未分类
+              })
+                .then(() => {
+                  fetchUrls();
+                  reloadCategories();
+                })
+                .catch(() => {
+                  alert("移动失败");
+                });
+            });
+        },
+      },
+    ],
+  },
+  {
+    type: "separator",
+  },
+  ...globalMenuItems,
+];
+
+// 生成分类的右键菜单
+const generateCategoryContextMenu = (
+  category: ICategory,
+  globalMenuItems: MenuItem[],
+  reloadCategories: () => void,
+  fetchUrls: () => void
+): MenuItem[] => [
+  {
+    type: "item",
+    label: "重命名分类",
+    inset: true,
+    onSelect: () => {
+      const newCategoryName = prompt("请输入新的分类名称", category.name);
+      if (newCategoryName && newCategoryName !== category.name) {
+        fetch(`/api/categories?id=${category.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: newCategoryName }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("重命名失败");
+            }
+            reloadCategories();
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      }
+    },
+  },
+  {
+    type: "item",
+    label: "删除分类",
+    inset: true,
+    onSelect: () => {
+      if (confirm("确认删除分类？")) {
+        fetch(`/api/categories?id=${category.id}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("删除失败");
+            }
+            reloadCategories();
+            fetchUrls();
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      }
+    },
+  },
+  {
+    type: "separator",
+  },
+  ...globalMenuItems,
+];
 
 const Content = ({
   globalMenuItems,
@@ -46,8 +251,18 @@ const Content = ({
     categories,
     loading: categoriesLoading,
     error: categoriesError,
+    reload: reloadCategories,
   } = useFetchCategories();
   const [activeCategory, setActiveCategory] = useState<string>("uncategorized");
+
+  useEffect(() => {
+    if (!categoriesLoading && categories.length > 0) {
+      setActiveCategory(categories[0].id);
+    }
+    if (!categoriesLoading && categories.length === 0) {
+      setActiveCategory("uncategorized");
+    }
+  }, [categories, categoriesLoading]);
 
   const {
     layoutsPerCategory,
@@ -90,128 +305,77 @@ const Content = ({
     };
   }, [handleClickOutside]);
 
-  const addLinkmodal = useModal(AddLinkModal);
+  const addLinkModal = useModal(AddLinkModal);
 
   const getContextMenuItems = useCallback(
-    (item: INavItem): MenuItem[] => [
-      {
-        type: "item",
-        label: "删除",
-        inset: true,
-        onSelect: () => {
-          fetch(`/api/links?id=${item.id}`, {
-            method: "DELETE",
-          })
-            .then(() => {
-              fetchUrls();
-            })
-            .catch(() => {
-              alert("删除失败");
-            });
-        },
-      },
-      {
-        type: "item",
-        label: "编辑",
-        inset: true,
-        onSelect: () => {
-          addLinkmodal
-            .show(item)
-            .then(() => {
-              fetchUrls();
-            })
-            .catch(() => {
-              alert("编辑失败");
-            });
-        },
-      },
-      {
-        type: "sub",
-        label: "移动到",
-        inset: true,
-        children: categories.map((category) => ({
-          type: "item",
-          label: category.name,
-          inset: true,
-          onSelect: () => {
-            fetch(`/api/links?id=${item.id}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ category: category.name }),
-            })
-              .then(() => {
-                fetchUrls();
-              })
-              .catch(() => {
-                alert("移动失败");
-              });
-          },
-        })),
-      },
-      {
-        type: "separator",
-      },
-      ...globalMenuItems,
-    ],
-    [categories, globalMenuItems, fetchUrls, addLinkmodal]
+    (item: INavItem) =>
+      generateNavItemContextMenu(
+        item,
+        categories,
+        globalMenuItems,
+        fetchUrls,
+        addLinkModal,
+        reloadCategories
+      ),
+    [categories, globalMenuItems, fetchUrls, addLinkModal, reloadCategories]
   );
 
-  const generateLayoutsForCategory = useCallback(
-    (category: string | null): Layouts => {
-      const newLayouts: Layouts = {};
-      const filteredUrls = urls.filter((item) =>
-        category ? item.category === category : !item.category
-      );
-
-      Object.keys(cols).forEach((breakpoint) => {
-        const colCount = cols[breakpoint];
-        const layout = filteredUrls.map((item, index) => ({
-          i: item.id,
-          x: index % colCount,
-          y: Math.floor(index / colCount),
-          w: 1,
-          h: 1,
-        }));
-
-        newLayouts[breakpoint] = layout;
-      });
-
-      return newLayouts;
-    },
-    [urls]
+  const categoryContextMenuItems = useCallback(
+    (category: ICategory) =>
+      generateCategoryContextMenu(
+        category,
+        globalMenuItems,
+        reloadCategories,
+        fetchUrls
+      ),
+    [globalMenuItems, reloadCategories, fetchUrls]
   );
 
-  useEffect(() => {
-    if (categories.length > 0) {
-      setActiveCategory(categories[0].name);
-    }
-  }, [categories]);
+  const filteredUrls = getFilteredUrls(urls, categories, activeCategory);
 
   useEffect(() => {
     if (!layoutsLoading) {
-      if (layoutsPerCategory[activeCategory]) {
-        return;
-      } else {
-        setLayoutsPerCategory({
-          ...layoutsPerCategory,
-          [activeCategory]: generateLayoutsForCategory(activeCategory),
-        });
+      const existingLayout = layoutsPerCategory[activeCategory];
+      const filteredUrlsIds = filteredUrls.map((item) => item.id);
+      const layoutItemIds = existingLayout
+        ? existingLayout.lg.map((layout) => layout.i)
+        : [];
+
+      const layoutsNeedUpdate =
+        !existingLayout ||
+        filteredUrlsIds.length !== layoutItemIds.length ||
+        !filteredUrlsIds.every((id) => layoutItemIds.includes(id));
+
+      if (layoutsNeedUpdate) {
+        const newLayouts = generateLayoutsForCategory(
+          urls,
+          categories,
+          activeCategory
+        );
+        const newLayoutsPerCategory: any = categories.reduce(
+          (acc, category) => ({
+            ...acc,
+            [category.id]: layoutsPerCategory[category.id],
+          }),
+          {}
+        );
+        newLayoutsPerCategory["uncategorized"] = layoutsPerCategory['uncategorized'];
+        newLayoutsPerCategory[activeCategory] = newLayouts;
+        setLayoutsPerCategory(newLayoutsPerCategory);
       }
     }
   }, [
     urls,
+    categories,
     activeCategory,
-    generateLayoutsForCategory,
-    setLayoutsPerCategory,
+    filteredUrls,
     layoutsPerCategory,
     layoutsLoading,
+    setLayoutsPerCategory,
   ]);
 
-  const onLayoutChange = (currentLayout: Layout[], allLayouts: Layouts) => {
+  const onLayoutChange = (_: Layout[], allLayouts: Layouts) => {
     if (isEditing) {
-      console.log("onLayoutChange", currentLayout, allLayouts);
       setLayoutsPerCategory({
         ...layoutsPerCategory,
         [activeCategory]: allLayouts,
@@ -219,21 +383,27 @@ const Content = ({
     }
   };
 
-  if (urlsLoading || categoriesLoading || layoutsLoading)
-    return <div>加载中...</div>;
   if (urlsError) return <div>错误: {urlsError}</div>;
   if (categoriesError) return <div>错误: {categoriesError}</div>;
   if (layoutsError) return <div>错误: {layoutsError}</div>;
 
   return (
     <div className="flex flex-col md:flex-row gap-2">
-      <div className="md:w-28 w-full">
-        <CategoryList
-          categories={categories}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-        />
+      <div className="fixed top-4 left-4 z-10 md:w-28 w-full">
+        {(urlsLoading || categoriesLoading || layoutsLoading) && (
+          <div>加载中...</div>
+        )}
       </div>
+      {categories.length > 0 && (
+        <div className="md:w-28 w-full">
+          <CategoryList
+            categories={categories}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+            getContextMenuItems={categoryContextMenuItems}
+          />
+        </div>
+      )}
       <div
         ref={contentRef}
         className={cn("flex-1 p-2 min-h-[19rem] glass", {
@@ -242,11 +412,7 @@ const Content = ({
       >
         {urls.length && (
           <NavGrid
-            urls={urls.filter((item) =>
-              activeCategory !== "uncategorized"
-                ? item.category === activeCategory
-                : !item.category
-            )}
+            urls={filteredUrls}
             isEditing={isEditing}
             layouts={layoutsPerCategory[activeCategory]}
             onLayoutChange={onLayoutChange}

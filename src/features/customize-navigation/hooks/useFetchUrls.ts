@@ -20,6 +20,7 @@ const useFetchUrls = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchUrls();
   }, []);
 

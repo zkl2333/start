@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { ICategory } from "../types";
 import { getCategorys } from "../actions";
+import { ICategory } from "@/lib/category";
 
 const useFetchCategories = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -22,7 +22,12 @@ const useFetchCategories = () => {
     fetchCategories();
   }, []);
 
-  return { categories, loading, error };
+  const reload = () => {
+    setLoading(true);
+    fetchCategories();
+  };
+
+  return { categories, loading, error, reload };
 };
 
 export default useFetchCategories;
