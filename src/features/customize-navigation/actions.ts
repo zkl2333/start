@@ -8,6 +8,7 @@ import {
   ICategory,
 } from "@/lib/category";
 import { getLayouts, saveLayouts } from "@/lib/layouts";
+import { readSetting, updateSetting } from "@/lib/settings";
 
 // 获取所有分类
 export const getCategorys = async () => {
@@ -38,4 +39,14 @@ export const getLayoutsAction = async () => {
 // 保存布局数据
 export const saveLayoutsAction = async (layouts: any) => {
   await saveLayouts(layouts);
+};
+
+// 更新或添加设置项
+export const updateSettingAction = async (key: string, value: any) => {
+  await updateSetting(key, value);
+};
+
+// 读取指定设置项
+export const readSettingAction = async <T>(key: string, defaultVale?: T) => {
+  return (await readSetting(key)) || defaultVale;
 };

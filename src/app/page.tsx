@@ -1,7 +1,7 @@
 "use client";
 import MainContextMenu, { MenuItem } from "@/components/main-context-menu";
 import clock from "@/features/clock";
-import customizeNavigation from "@/features/customize-navigation";
+import getCustomizeNavigation from "@/features/customize-navigation";
 import wallpaperFeature from "@/features/wallpaper";
 import { useCoreStore } from "@/providers/core-store-provider";
 import NiceModal from "@ebay/nice-modal-react";
@@ -56,9 +56,12 @@ export default function Home() {
   ].filter(Boolean) as MenuItem[];
 
   useEffect(() => {
-    coreStore.registerFeature(wallpaperFeature);
-    coreStore.registerFeature(clock);
-    coreStore.registerFeature(customizeNavigation);
+    const init = async () => {
+      coreStore.registerFeature(wallpaperFeature);
+      coreStore.registerFeature(clock);
+      coreStore.registerFeature(await getCustomizeNavigation());
+    };
+    init();
   }, [coreStore]);
 
   return (

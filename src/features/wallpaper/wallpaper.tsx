@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Image from "next/image";
-import { fetchImages, WallpaperItem } from "./actions";
+import { fetchImages, readSettingAction, updateSettingAction, WallpaperItem } from "./actions";
 
 type DateString = string;
 
@@ -33,14 +33,14 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   const [date, setDate] = useState<DateString | null>(null);
 
   const setDateString = (date: string) => {
-    localStorage.setItem("wallpaperDate", date);
+    updateSettingAction("features.wallpaper.BingDate", date);
     setDate(date);
   };
 
   useEffect(() => {
-    fetchImages().then((images) => {
+    fetchImages().then(async (images) => {
       setWallpapers(images);
-      const date = localStorage.getItem("wallpaperDate");
+      const date = await readSettingAction("features.wallpaper.BingDate");
       if (date) {
         setDate(date);
       } else {

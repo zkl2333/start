@@ -1,0 +1,9 @@
+features:
+  clock:
+    enabled: true
+  customizeNavigation:
+    flatMode: true
+    enabled: true
+  wallpaper:
+    enabled: true
+    BingDate: "20241007"

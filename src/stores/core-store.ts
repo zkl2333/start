@@ -1,5 +1,6 @@
 import { MenuItem } from "@/components/main-context-menu";
 import { createStore } from "zustand/vanilla";
+import { readSettingAction, updateSettingAction } from "./actions";
 
 interface IFeature {
   id: string;
@@ -18,9 +19,9 @@ interface IFeature {
 
 export interface ICoreStore {
   features: IFeature[];
-  registerFeature: (feature: IFeature) => void;
-  enableFeature: (id: string) => void;
-  disableFeature: (id: string) => void;
+  registerFeature: (feature: IFeature) => Promise<void>;
+  enableFeature: (id: string) => Promise<void>;
+  disableFeature: (id: string) => Promise<void>;
   updateContextMenu: (id: string, contextMenu: MenuItem) => void;
 }
 
@@ -30,10 +31,11 @@ export const createCoreStore = () => {
   return createStore<ICoreStore>()((set, get) => ({
     features: [] as IFeature[],
     registerFeature: async (feature) => {
-      const enabled = localStorage.getItem(`feature:${feature.id}`);
-      feature.enabled = enabled ? enabled === "true" : feature.enabled;
+      // 从设置文件中读取特性是否启用
+      const enabled = await readSettingAction(`features.${feature.id}.enabled`);
+      feature.enabled = enabled !== undefined ? enabled : feature.enabled;
 
-      return set((state) => {
+      set((state) => {
         if (state.features.some((f) => f.name === feature.name)) {
           return state;
         }
@@ -43,17 +45,17 @@ export const createCoreStore = () => {
         };
       });
     },
-    enableFeature: (id) => {
-      localStorage.setItem(`feature:${id}`, "true");
+    enableFeature: async (id) => {
+      await updateSettingAction(`features.${id}.enabled`, true);
       set((state) => ({
         features: state.features.map((f) =>
           f.id === id ? { ...f, enabled: true } : f
         ),
       }));
     },
-    disableFeature: (id) => {
-      localStorage.setItem(`feature:${id}`, "false");
-      return set((state) => ({
+    disableFeature: async (id) => {
+      await updateSettingAction(`features.${id}.enabled`, false);
+      set((state) => ({
         features: state.features.map((feature) =>
           feature.id === id ? { ...feature, enabled: false } : feature
         ),
