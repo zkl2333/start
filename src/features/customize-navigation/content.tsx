@@ -254,15 +254,14 @@ const Content = ({
     reload: reloadCategories,
   } = useFetchCategories();
   const [activeCategory, setActiveCategory] = useState<string>("uncategorized");
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (!categoriesLoading && categories.length > 0) {
+    if (!initialized && !categoriesLoading && categories.length > 0) {
       setActiveCategory(categories[0].id);
+      setInitialized(true);
     }
-    if (!categoriesLoading && categories.length === 0) {
-      setActiveCategory("uncategorized");
-    }
-  }, [categories, categoriesLoading]);
+  }, [categories, categoriesLoading, initialized]);
 
   const {
     layoutsPerCategory,
@@ -271,30 +270,36 @@ const Content = ({
     error: layoutsError,
   } = useLayoutsPerCategoryStorage();
 
-  const contextMenu = useMemo<MenuItem | null>(
+  const customizeNavigationEditingMode = useMemo<MenuItem | null>(
     () => getContextMenu("customizeNavigationEditingMode", globalMenuItems),
     [globalMenuItems]
   );
 
-  const isEditing = !!contextMenu?.checked;
+  const customizeNavigationFlatMode = useMemo<MenuItem | null>(
+    () => getContextMenu("customizeNavigationFlatMode", globalMenuItems),
+    [globalMenuItems]
+  );
+
+  const isEditing = !!customizeNavigationEditingMode?.checked;
+  const isFlatMode = !!customizeNavigationFlatMode?.checked;
 
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback(
     (e: MouseEvent) => {
-      if (!contextMenu) return;
+      if (!customizeNavigationEditingMode) return;
       if (
         contentRef.current &&
         !contentRef.current.contains(e.target as Node) &&
         isEditing
       ) {
         updateMenuItem("customizeNavigationEditingMode", {
-          ...contextMenu,
+          ...customizeNavigationEditingMode,
           checked: false,
         });
       }
     },
-    [contextMenu, isEditing, updateMenuItem]
+    [customizeNavigationEditingMode, isEditing, updateMenuItem]
   );
 
   useEffect(() => {
@@ -359,7 +364,8 @@ const Content = ({
           }),
           {}
         );
-        newLayoutsPerCategory["uncategorized"] = layoutsPerCategory['uncategorized'];
+        newLayoutsPerCategory["uncategorized"] =
+          layoutsPerCategory["uncategorized"];
         newLayoutsPerCategory[activeCategory] = newLayouts;
         setLayoutsPerCategory(newLayoutsPerCategory);
       }
@@ -374,11 +380,15 @@ const Content = ({
     setLayoutsPerCategory,
   ]);
 
-  const onLayoutChange = (_: Layout[], allLayouts: Layouts) => {
+  const onLayoutChange = (
+    _: Layout[],
+    allLayouts: Layouts,
+    activeCategoryId: string
+  ) => {
     if (isEditing) {
       setLayoutsPerCategory({
         ...layoutsPerCategory,
-        [activeCategory]: allLayouts,
+        [activeCategoryId]: allLayouts,
       });
     }
   };
@@ -394,7 +404,7 @@ const Content = ({
           <div>加载中...</div>
         )}
       </div>
-      {categories.length > 0 && (
+      {!isFlatMode && categories.length > 0 && (
         <div className="md:w-28 w-full">
           <CategoryList
             categories={categories}
@@ -404,24 +414,61 @@ const Content = ({
           />
         </div>
       )}
-      <div
-        ref={contentRef}
-        className={cn("flex-1 p-2 min-h-[19rem] glass", {
-          "bg-gray-100/20 rounded-3xl": isEditing,
-        })}
-      >
-        {urls.length && (
-          <NavGrid
-            urls={filteredUrls}
-            isEditing={isEditing}
-            layouts={layoutsPerCategory[activeCategory]}
-            onLayoutChange={onLayoutChange}
-            getContextMenuItems={getContextMenuItems}
-            updateMenuItem={updateMenuItem}
-            fetchUrls={fetchUrls}
-            breakpoints={breakpoints}
-            cols={cols}
-          />
+      <div ref={contentRef} className={"flex-1"}>
+        {!isFlatMode && urls.length > 0 && (
+          <div
+            className={cn("p-2 min-h-[19rem] glass", {
+              "bg-gray-100/20 rounded-3xl": isEditing,
+            })}
+          >
+            <NavGrid
+              urls={filteredUrls}
+              isEditing={isEditing}
+              layouts={layoutsPerCategory[activeCategory]}
+              onLayoutChange={(currentLayout, allLayouts) =>
+                onLayoutChange(currentLayout, allLayouts, activeCategory)
+              }
+              getContextMenuItems={getContextMenuItems}
+              updateMenuItem={updateMenuItem}
+              fetchUrls={fetchUrls}
+              breakpoints={breakpoints}
+              cols={cols}
+            />
+          </div>
+        )}
+        {isFlatMode && (
+          <div className="flex flex-col gap-4">
+            {categories.map((category) => (
+              <div key={category.id}>
+                <div
+                  className={cn("p-2 glass", {
+                    "bg-gray-100/20 rounded-3xl": isEditing,
+                  })}
+                >
+                  <div
+                    className={cn(
+                      "pt-4 ps-4 text-lg font-bold text-shadow text-gray-200"
+                    )}
+                  >
+                    {category.name}
+                  </div>
+                  <NavGrid
+                    urls={getFilteredUrls(urls, categories, category.id)}
+                    isEditing={isEditing}
+                    layouts={layoutsPerCategory[category.id]}
+                    onLayoutChange={(currentLayout, allLayouts) =>
+                      onLayoutChange(currentLayout, allLayouts, category.id)
+                    }
+                    getContextMenuItems={getContextMenuItems}
+                    updateMenuItem={updateMenuItem}
+                    fetchUrls={fetchUrls}
+                    breakpoints={breakpoints}
+                    cols={cols}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
       <div className="w-28 hidden xl:block" />

@@ -1,259 +1,280 @@
-- id: e6862737-f94b-4adc-b1b8-ddbdf932f334
-  title: 百度
-  url: https://www.baidu.com
-  iconUrl: https://psstatic.cdn.bcebos.com/video/wiseindex/aa6eef91f8b5b1a33b454c401_1660835115000.png
-  iconWrapper: false
-  category: null
 - id: 91fe9e90-cedf-428b-bafb-abbe4991c77c
   title: 谷歌
   url: https://www.google.com
   iconUrl: https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png
   iconWrapper: true
-  category: null
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
+- id: 4f6c0f80-26a3-4bde-b56d-f107c2460bb8
+  title: bilibili
+  url: https://www.bilibili.com/
+  iconUrl: https://i0.hdslb.com/bfs/static/jinkela/long/images/512.png
+  iconWrapper: false
+  category: 86c2b3ed-d5c1-4eac-bad2-4656eb21ceb0
 - id: 73addab1-8764-4646-8bfd-5d912a55ab4a
   title: github
   url: https://github.com/
   iconUrl: https://github.githubassets.com/favicons/favicon.svg
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
   iconWrapper: true
-  category: 代码
-- id: e1a9c7a1-a6a5-486b-8387-7c9b8cea0c5a
-  url: https://ui.shadcn.com/
-  title: shadcn
-  category: null
 - id: 3dba77ee-6ad8-4302-a7bb-bc4ddf233525
   title: dndkit
   url: https://dndkit.com/
   iconUrl: https://dndkit.com/apple-touch-icon.png
   iconWrapper: false
-  category: null
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: e05d8b14-3434-4330-8830-1965e36019c1
   title: tailwindcss
   url: https://tailwindcss.com/
   iconUrl: https://tailwindcss.com/favicons/apple-touch-icon.png?v=3
   iconWrapper: false
-  category: null
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: 2aa03502-857c-48bc-b97f-d29f25bb4fc0
-  url: https://emojigraph.org/zh-hans/
   title: 表情符号
-  category: c3795970-5abc-429f-9f18-a77aa4ca7882
+  url: https://emojigraph.org/zh-hans/
+  iconWrapper: true
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 317254c5-3330-4ff7-b303-edbfec334c24
-  title: 谷歌翻译
   url: https://translate.google.com/
-  iconUrl: https://www.gstatic.com/translate/favicon.ico
-  iconWrapper: false
-  category: null
+  title: 谷歌翻译
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 08be2758-6edb-4547-96bc-c57fc612cecd
   title: nextjs
   url: https://nextjs.org/
   iconUrl: https://nextjs.org/favicon.ico
   iconWrapper: true
-  category: null
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: a41b5f22-cb8e-479b-a822-fc57ff1a694b
   title: zustand
   url: https://docs.pmnd.rs/zustand/getting-started/introduction
   iconUrl: https://docs.pmnd.rs/zustand.ico
-  iconWrapper: true
-  category: 代码
-- id: 902390c7-6e27-487c-a779-f42f96cb5b94
-  title: medium
-  url: https://medium.com/
-  iconUrl: https://miro.medium.com/v2/resize:fill:152:152/1*sHhtYhaCe2Uc3IU0IgKwIQ.png
   iconWrapper: false
-  category: 首页
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: ff70bc39-b84a-4a2e-a553-b2a3a890b636
   title: nga
   url: https://bbs.nga.cn/
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fbbs.nga.cn%2F&size=256
-  iconWrapper: true
-  category: null
+  iconWrapper: false
+  category: 86c2b3ed-d5c1-4eac-bad2-4656eb21ceb0
 - id: 2e7c05d9-25ec-48a6-840d-25b409f6d9d2
-  url: https://mp.weixin.qq.com/
   title: 微信开放平台
-- id: eca9f66a-8c3b-4112-a9d4-e323ec13db8f
-  title: swiftui
-  url: https://developer.apple.com/documentation/swiftui
-  iconUrl: https://developer.apple.com/favicon.ico
-  iconWrapper: true
-  category: 首页
+  url: https://mp.weixin.qq.com/
+  iconUrl: https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png
+  iconWrapper: false
+  category: c8d1edab-8088-4b03-ab72-960d64316e07
 - id: 19b2e697-050c-459e-8b94-430f816e167e
   url: https://www.iconfont.cn/
   title: iconfont
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 2b4c0a4d-4f1b-4bc2-bf33-d5cdbad226c5
   title: 思否
   url: https://segmentfault.com/
   iconUrl: https://static.segmentfault.com/main_site_next/4ade9741/_next/static/media/sf-icon-small.4d244289.svg
   iconWrapper: false
-  category: null
+  category: 86c2b3ed-d5c1-4eac-bad2-4656eb21ceb0
 - id: 41b02f03-c4e9-409e-a30d-6b9afd8db531
   title: v2ex
   url: https://v2ex.com/
   iconUrl: https://v2ex.com/static/apple-touch-icon-180.png?v=91e795b8b5d9e2cbf2d886c3d4b7d63c
   iconWrapper: false
-  category: null
+  category: 86c2b3ed-d5c1-4eac-bad2-4656eb21ceb0
 - id: bf53036d-2ff7-44cc-8cc0-47dc9e627600
   title: 掘金
   url: https://juejin.cn/
   iconUrl: https://lf-web-assets.juejin.cn/obj/juejin-web/xitu_juejin_web/static/favicons/apple-touch-icon.png
   iconWrapper: false
-  category: 5c87ab34-1025-4b13-98fb-ebfdsdasb65e
+  category: 86c2b3ed-d5c1-4eac-bad2-4656eb21ceb0
 - id: 9b5e40aa-2b89-4f85-85ee-689dab0447bd
   title: rustwiki
   url: https://rustwiki.org/docs/
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Frustwiki.org%2Fdocs%2F&size=256
-  iconWrapper: false
-  category: 首页
-- id: ad3a6609-0298-477f-b592-8d27fe77526c
-  title: vant-ui
-  url: https://vant-ui.github.io/vant-weapp/#/home
-  iconUrl: https://img.yzcdn.cn/vant/logo.png
   iconWrapper: true
-  category: 065c1e09-e31a-4878-9d8b-d2d6d7b682ca
-- id: b4ec8b4a-a15b-4d63-9ae6-e993d88ff5de
-  title: carbon
-  url: https://carbon.now.sh/
-  iconUrl: https://carbon.now.sh/favicon.ico
-  iconWrapper: false
-  category: 065c1e09-e31a-4878-9d8b-d2d6d7b682ca
+  category: bb769a13-32de-4840-ae71-4b8ec4bd374e
 - id: ad1286a5-48aa-44fd-9f03-49b00a19bac0
   title: composerize
   url: https://www.composerize.com/
   iconUrl: https://www.composerize.com/favicon.ico
   iconWrapper: false
-  category: 代码
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 0a03b988-f8c5-45d8-ae42-66751fd4aef6
   title: decomposerize
   url: https://www.decomposerize.com/
   iconUrl: https://www.decomposerize.com/favicon.ico
   iconWrapper: false
-  category: 代码
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 098c9fb9-f9e6-4c6f-a0cf-f3a09da76597
   title: JSON 格式化
   url: https://www.huatools.com/
   iconUrl: https://www.huatools.com/img/favicon.ico
   iconWrapper: false
-  category: 代码
-- id: 3dca06fe-42ec-47c2-a23a-fd103e8cdb19
-  title: manifest-generator
-  url: https://www.simicart.com/manifest-generator.html/
-  iconUrl: https://simicart.com/wp-content/uploads/cropped-icon-logo-2-180x180.png
-  iconWrapper: false
-  category: 代码
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: d2d0c094-cc16-43bc-ab47-117209959054
   title: 文本对比
   url: https://tool.lu/diff/
   iconUrl: https://qn11.tool.lu/201711/08/002818pvCvPDnAZK6IioEb_57x57.png
   iconWrapper: false
-  category: 首页
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 602d4bef-95a5-4195-9f81-e594611d3a76
   title: deepl
   url: https://www.deepl.com/zh/translator
   iconUrl: https://static.deepl.com/img/apple-touch-icon.png
   iconWrapper: false
-  category: 04f251d6-ebd8-4f84-b288-cd1027d34446
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: 8cf30308-a48a-45b9-8af5-3ebfacc00858
   title: 变量取名
   url: https://unbug.github.io/codelf/
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
   iconUrl: https://unbug.github.io/codelf/images/codelf_logo.f4ae25bd.png
   iconWrapper: false
-  category: null
 - id: 27f44938-936d-46d1-bf89-3ba876a1c0c1
   title: makerworld
   url: https://makerworld.com/zh
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fmakerworld.com%2Fzh&size=256
   iconWrapper: false
-  category: 首页
+  category: 0b748429-df23-42be-9c43-93d1e039a2fd
 - id: 6eba5a33-90e8-4ea3-a752-60e590c8a254
   url: https://www.thingiverse.com/
   title: thingiverse
-  category: 首页
+  category: 0b748429-df23-42be-9c43-93d1e039a2fd
 - id: c460321e-dddc-4427-8989-f8f73c5c3a65
   url: https://www.printables.com/model
   title: printables
-  category: 首页
+  category: 0b748429-df23-42be-9c43-93d1e039a2fd
 - id: 40b03608-5b6d-4a4f-bf6e-e12565fe290b
   title: cults3d
   url: https://cults3d.com/
-  iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fcults3d.com%2F&size=256
+  iconUrl: https://assets.cults3d.com/assets/logos/apple-touch-icon/cults-bce86dad0556a167574b04b1779f0ed89b6c39b9b1e7e5c91bd73067ab121d0a.png
   iconWrapper: false
-  category: 首页
+  category: 0b748429-df23-42be-9c43-93d1e039a2fd
 - id: 75afb0f7-6294-41f8-b237-6d364aa1c925
-  url: https://dribbble.com/
   title: dribbble
-  category: 首页
+  url: https://dribbble.com/
+  iconUrl: https://cdn.dribbble.com/assets/apple-touch-icon-precomposed-182fb6df572b99fd9f7c870e5bd4441188121518640c0fa57782b258434d1e0f.png
+  iconWrapper: false
+  category: bb769a13-32de-4840-ae71-4b8ec4bd374e
 - id: 85f5f9e4-7da0-4141-b956-91fd218b201f
   title: tympanus
   url: https://tympanus.net/codrops/
   iconUrl: https://codrops-1f606.kxcdn.com/codrops/wp-content/themes/codropstheme03/favicons/apple-touch-icon.png?x20951&v=2
   iconWrapper: false
-  category: 首页
+  category: bb769a13-32de-4840-ae71-4b8ec4bd374e
 - id: 2dd0ec52-baf7-4104-9546-c2a656fb2814
   title: anse
   url: https://anse.app/
   iconUrl: https://anse.app/apple-touch-icon.png
   iconWrapper: false
-  category: 首页
+  category: 706f4972-23b7-4037-a885-4bb845d8d4ad
 - id: 39427f91-e32e-4e67-bef8-d9fd6ccfea84
   title: mobx
   url: https://mobx.js.org/
-  iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fmobx.js.org%2F&size=256
-  iconWrapper: true
-  category: 首页
+  iconUrl: https://mobx.js.org/assets/mobx.png
+  iconWrapper: false
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: 6f4d2d17-ad4e-4274-8548-f273849b44d4
   title: react
   url: https://react.dev/
   iconUrl: https://react.dev/apple-touch-icon.png
   iconWrapper: false
-  category: 首页
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: c0bcd0a7-454a-42c2-aa7e-6cde256748a2
   title: vuejs
   url: https://vuejs.org/
   iconUrl: https://vuejs.org/images/logo.png
   iconWrapper: false
-  category: 首页
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: 61ab6f77-e236-45ef-8f31-365874eadef0
   title: css 转 tailwind
   url: https://dev.libkit.cn/css-to-tailwind
   iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fdev.libkit.cn%2Fcss-to-tailwind&size=256
   iconWrapper: true
-  category: 代码
+  category: 70907953-98c8-467f-bcd1-506c54dd1488
 - id: abca9c4b-e4b3-4f48-8192-76ceb946a5bd
   title: daisyui
   url: https://daisyui.com
   iconUrl: https://img.daisyui.com/images/daisyui-logo/favicon-180.png
   iconWrapper: true
-  category: 首页
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: 410f7847-7d23-4902-ad03-3a44a033af8d
   title: radix-ui
   url: https://www.radix-ui.com
   iconUrl: https://www.radix-ui.com/favicon.png
   iconWrapper: true
-  category: 首页
+  category: 8a294cb9-48ac-45c4-b709-1f02fe38d559
 - id: 1d63109a-bc96-4c8d-97cf-da988e4c5cfd
   title: 宏任务和微任务
   url: https://blog.poetries.top/browser-working-principle/guide/part4/lesson18.html
   iconUrl: https://blog.poetries.top/browser-working-principle/logo.png
   iconWrapper: false
-  category: 首页
-- id: 705e2269-78e8-43c4-b32d-54c6609cc67d
-  title: brandfetch
-  url: https://brandfetch.com/
-  iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fbrandfetch.com%2F&size=256
-  iconWrapper: false
-- id: d5a81477-3df2-41be-802e-a207617c2f28
-  title: Start 原型
+  category: bb769a13-32de-4840-ae71-4b8ec4bd374e
+- id: 90eef0de-1cc0-4e64-94d3-11f18e161482
+  title: start 原型
   url: https://www.figma.com/proto/Xy7BoXqo5Qt4p3x1ZABUlt/%E5%AF%BC%E8%88%AA?page-id=0%3A1&node-id=0-615&viewport=807%2C341%2C0.4&t=qT6LHpQllwTdDass-1&scaling=min-zoom&content-scaling=fixed
   iconUrl: https://static.figma.com/app/icon/1/touch-76.png
   iconWrapper: false
-- id: db203cbf-f4d0-4cbb-bbb4-b0c406eee45d
-  title: ChatGPT
-  url: https://chatgpt.com/
-  iconUrl: https://cdn.oaistatic.com/assets/apple-touch-icon-mz9nytnj.webp
+  category: bb769a13-32de-4840-ae71-4b8ec4bd374e
+- id: 61058735-46af-4930-9193-c9a1a6d70969
+  title: AIProxy
+  url: https://aiproxy.io/
+  iconUrl: https://aiproxy.io/favicon/apple-touch-icon.png
+  category: 706f4972-23b7-4037-a885-4bb845d8d4ad
   iconWrapper: false
-  category: 首页
-- id: 17140165-474a-4301-a115-4d6e53717b2c
+- id: b3553156-53aa-4cb0-882a-8484ec4475b2
+  title: Synology NAS
+  url: https://192.168.31.32:5001/
+  iconUrl: https://zkl2333.synology.me:5001/webman/resources/images/icon_dsm_96.png?v=40438
+  iconWrapper: false
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+- id: 85caabfd-c1f5-432c-8547-32b7e5c3679d
+  title: CloudDrive2
+  url: http://192.168.31.32:19798/
+  iconUrl: http://192.168.31.32:19798/icon-512.png
+  iconWrapper: false
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+- id: 3e99601d-73b9-4a56-b07d-fb5179d48c40
+  title: 青龙
+  url: http://192.168.31.32:5700/
+  iconUrl: https://qn.whyour.cn/favicon.svg
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+  iconWrapper: false
+- id: a054482a-b707-462a-83e5-dce87ec07688
   title: MDC-NG
   url: http://192.168.31.32:9208/
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
   iconUrl: http://192.168.31.32:9208/favicon.ico
   iconWrapper: false
-  category: 04f251d6-ebd8-4f84-b288-cd1027d34446
-  type: mdcng
+- id: 6428c85d-530e-49e0-bd55-c9cb47b7da3a
+  title: MoviePilot
+  url: http://192.168.31.32:9209/#/dashboard
+  iconUrl: http://192.168.31.32:9209/favicon.ico
+  iconWrapper: true
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+- id: dd0110b0-fc06-43c0-9d73-e0a99f9d6660
+  title: 飞牛
+  url: http://fnos.net/dududu
+  iconUrl: http://fnos.net/favicon.ico
+  iconWrapper: false
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+- id: 5242598c-68e3-4d7a-838d-8559b4a06bf8
+  title: 秘塔AI搜索
+  url: https://metaso.cn/
+  iconUrl: https://metaso.cn/apple-touch-icon.png
+  iconWrapper: false
+  category: 706f4972-23b7-4037-a885-4bb845d8d4ad
+- id: 242e00d7-d956-4e18-938f-0e32b334960e
+  title: qBittorrent
+  url: http://192.168.31.32:8080/
+  iconUrl: http://192.168.31.32:8080/images/qbittorrent32.png
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+  iconWrapper: true
+- id: 1cc073d5-b745-46e0-bd47-e137e4b7cd50
+  title: Emby
+  url: http://192.168.31.32:8096/web/index.html#!/home
+  internalUrl: http://192.168.31.32:8096/web/index.html#!/home
+  iconUrl: http://192.168.31.32:8096/web/images/icon-192x192.png
+  category: 6cfc114a-2615-46c6-a8ac-bde1749998a6
+  iconWrapper: false
+- id: 46aab00f-d771-4ddf-ae9a-6f3e63343324
+  title: chatgpt
+  url: https://chatgpt.com/
+  iconUrl: https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE%2CSIZE%2CURL&url=https%3A%2F%2Fchatgpt.com%2F&size=256
+  iconWrapper: false
+  category: 706f4972-23b7-4037-a885-4bb845d8d4ad
