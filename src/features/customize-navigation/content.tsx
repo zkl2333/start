@@ -438,36 +438,50 @@ const Content = ({
         )}
         {isFlatMode && (
           <div className="flex flex-col gap-4">
-            {categories.map((category) => (
-              <div key={category.id}>
-                <div
-                  className={cn("p-2 glass", {
-                    "bg-gray-100/20 rounded-3xl": isEditing,
-                  })}
-                >
+            {[
+              ...categories,
+              {
+                id: "uncategorized",
+                name: "未分类",
+              },
+            ].map((category) => {
+              const filteredUrls = getFilteredUrls(
+                urls,
+                categories,
+                category.id
+              );
+              if (filteredUrls.length === 0) return null;
+              return (
+                <div key={category.id}>
                   <div
-                    className={cn(
-                      "pt-4 ps-4 text-lg font-bold text-shadow text-gray-200"
-                    )}
+                    className={cn("p-2 glass", {
+                      "bg-gray-100/20 rounded-3xl": isEditing,
+                    })}
                   >
-                    {category.name}
+                    <div
+                      className={cn(
+                        "pt-4 ps-4 text-lg font-bold text-shadow text-gray-200"
+                      )}
+                    >
+                      {category.name}
+                    </div>
+                    <NavGrid
+                      urls={filteredUrls}
+                      isEditing={isEditing}
+                      layouts={layoutsPerCategory[category.id]}
+                      onLayoutChange={(currentLayout, allLayouts) =>
+                        onLayoutChange(currentLayout, allLayouts, category.id)
+                      }
+                      getContextMenuItems={getContextMenuItems}
+                      updateMenuItem={updateMenuItem}
+                      fetchUrls={fetchUrls}
+                      breakpoints={breakpoints}
+                      cols={cols}
+                    />
                   </div>
-                  <NavGrid
-                    urls={getFilteredUrls(urls, categories, category.id)}
-                    isEditing={isEditing}
-                    layouts={layoutsPerCategory[category.id]}
-                    onLayoutChange={(currentLayout, allLayouts) =>
-                      onLayoutChange(currentLayout, allLayouts, category.id)
-                    }
-                    getContextMenuItems={getContextMenuItems}
-                    updateMenuItem={updateMenuItem}
-                    fetchUrls={fetchUrls}
-                    breakpoints={breakpoints}
-                    cols={cols}
-                  />
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
