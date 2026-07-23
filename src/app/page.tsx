@@ -7,32 +7,29 @@ import { useCoreStore } from "@/providers/core-store-provider";
 import NiceModal from "@ebay/nice-modal-react";
 import { useEffect } from "react";
 
-const useAllFeatures = () => {
-  return useCoreStore((state) => state.features);
-};
-
 export default function Home() {
-  const coreStore = useCoreStore((state) => state);
+  const features = useCoreStore((state) => state.features);
+  const registerFeature = useCoreStore((state) => state.registerFeature);
+  const enableFeature = useCoreStore((state) => state.enableFeature);
+  const disableFeature = useCoreStore((state) => state.disableFeature);
+  const updateContextMenu = useCoreStore((state) => state.updateContextMenu);
 
-  const allFeatures = useAllFeatures();
-  const enabledFeatures = coreStore.features.filter(
-    (feature) => feature.enabled
-  );
+  const enabledFeatures = features.filter((feature) => feature.enabled);
   const enabledFeaturesContextMenus = enabledFeatures.flatMap(
     (feature) => feature.contextMenus || []
   );
 
   const menuItems: MenuItem[] = [
-    ...allFeatures.map((feature) => {
+    ...features.map((feature) => {
       return {
         type: "checkbox",
         label: feature.name,
         checked: feature.enabled,
         onSelect: () => {
           if (feature.enabled) {
-            coreStore.disableFeature(feature.id);
+            disableFeature(feature.id);
           } else {
-            coreStore.enableFeature(feature.id);
+            enableFeature(feature.id);
           }
         },
       } as const;
@@ -57,19 +54,23 @@ export default function Home() {
 
   useEffect(() => {
     const init = async () => {
-      coreStore.registerFeature(wallpaperFeature);
-      coreStore.registerFeature(clock);
-      coreStore.registerFeature(await getCustomizeNavigation());
+      await Promise.all([
+        registerFeature(wallpaperFeature),
+        registerFeature(clock),
+        getCustomizeNavigation().then(registerFeature),
+      ]);
     };
-    init();
-  }, [coreStore]);
+    void init();
+  }, [registerFeature]);
 
   return (
     <NiceModal.Provider>
       <MainContextMenu
         menuItems={menuItems}
         updateMenuItem={(menuItem) => {
-          menuItem.id && coreStore.updateContextMenu(menuItem.id, menuItem);
+          if (menuItem.id) {
+            updateContextMenu(menuItem.id, menuItem);
+          }
         }}
       >
         <div className="main-content h-svh w-full">
@@ -86,7 +87,7 @@ export default function Home() {
                     <feature.content
                       key={feature.id}
                       globalMenuItems={menuItems}
-                      updateMenuItem={coreStore.updateContextMenu}
+                      updateMenuItem={updateContextMenu}
                     />
                   )
                 );

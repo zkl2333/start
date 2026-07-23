@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:24-alpine AS base
 
 # 仅在需要时安装依赖项
 FROM base AS deps

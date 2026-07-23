@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IIcon {
   url?: string;
@@ -26,6 +26,12 @@ const rgbDataURL = (r: number, g: number, b: number) =>
 
 const SiteIcon = ({ url, alt, wrapper, icon, active }: IIcon) => {
   const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+    setFailed(false);
+  }, [url]);
 
   return (
     <div
@@ -33,13 +39,18 @@ const SiteIcon = ({ url, alt, wrapper, icon, active }: IIcon) => {
         "w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden",
         {
           "bg-gray-200/80": loaded && wrapper,
+          "bg-white/80 text-gray-700": failed,
           "outline outline-primary": active,
         }
       )}
     >
       {icon
         ? icon
-        : url && (
+        : failed
+          ? <span className="text-base font-semibold" aria-hidden="true">
+              {alt?.trim().charAt(0).toUpperCase() || "?"}
+            </span>
+          : url && (
             <Image
               src={url}
               alt={alt || ""}
@@ -49,9 +60,12 @@ const SiteIcon = ({ url, alt, wrapper, icon, active }: IIcon) => {
               })}
               width={40}
               height={40}
+              unoptimized
+              referrerPolicy="no-referrer"
               placeholder="blur"
               blurDataURL={rgbDataURL(216, 218, 221)}
               onLoad={() => setLoaded(true)}
+              onError={() => setFailed(true)}
             />
           )}
     </div>

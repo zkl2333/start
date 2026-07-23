@@ -1,20 +1,5 @@
 "use client";
 
-// 防抖函数
-function debounce(fn: Function, delay: number) {
-  let timer: number | null = null;
-
-  return function (this: any, ...args: any[]) {
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = window.setTimeout(() => {
-      fn.apply(this, args);
-    }, delay);
-  };
-}
-
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
@@ -31,6 +16,24 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import React, { useEffect } from "react";
+
+// 防抖函数
+function debounce<TArgs extends unknown[]>(
+  fn: (...args: TArgs) => void,
+  delay: number
+) {
+  let timer: number | null = null;
+
+  return (...args: TArgs) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = window.setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
 
 export interface MenuItem {
   id?: string;
@@ -121,12 +124,11 @@ const renderMenuItems = (
             onSelect={(e) => {
               if (item?.onSelect) {
                 const res = item.onSelect(e, item);
-                if (res) {
-                  updateMenuItem &&
-                    updateMenuItem({
+                if (res && updateMenuItem) {
+                  updateMenuItem({
                       ...item,
                       ...res,
-                    });
+                  });
                 }
               }
             }}
@@ -214,7 +216,7 @@ const MainContextMenu = ({
             k?.toLowerCase() === key.toLowerCase()
           ) {
             debounce(() => {
-              item.onSelect && item.onSelect(event, item);
+              item.onSelect?.(event, item);
             }, 100)();
           }
         }

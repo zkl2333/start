@@ -77,7 +77,7 @@ const NavItem = ({
   const fetcher = (...rest: Parameters<typeof fetch>) =>
     fetch(...rest).then((res) => res.json());
 
-  const { data, error, isLoading } = useSWRImmutable(
+  const { data, isLoading } = useSWRImmutable(
     item.url && !item.iconUrl ? `/api/site-info?url=${item.url}` : null,
     fetcher
   );

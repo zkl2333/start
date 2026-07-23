@@ -1,4 +1,5 @@
 import { MenuItem } from "@/components/main-context-menu";
+import type { ComponentType } from "react";
 import { createStore } from "zustand/vanilla";
 import { readSettingAction, updateSettingAction } from "./actions";
 
@@ -7,14 +8,11 @@ interface IFeature {
   name: string;
   enabled: boolean;
   contextMenus?: MenuItem[];
-  render?: () => JSX.Element;
-  content?: ({
-    globalMenuItems,
-    updateMenuItem,
-  }: {
+  render?: ComponentType;
+  content?: ComponentType<{
     globalMenuItems: MenuItem[];
     updateMenuItem: (id: string, contextMenu: MenuItem) => void;
-  }) => JSX.Element;
+  }>;
 }
 
 export interface ICoreStore {
@@ -28,22 +26,43 @@ export interface ICoreStore {
 export const createFeature = (feature: IFeature) => feature;
 
 export const createCoreStore = () => {
+  const pendingRegistrations = new Map<string, Promise<void>>();
+
   return createStore<ICoreStore>()((set, get) => ({
     features: [] as IFeature[],
     registerFeature: async (feature) => {
-      // 从设置文件中读取特性是否启用
-      const enabled = await readSettingAction(`features.${feature.id}.enabled`);
-      feature.enabled = enabled !== undefined ? enabled : feature.enabled;
+      if (get().features.some((item) => item.id === feature.id)) return;
 
-      set((state) => {
-        if (state.features.some((f) => f.name === feature.name)) {
-          return state;
-        }
+      const pendingRegistration = pendingRegistrations.get(feature.id);
+      if (pendingRegistration) return pendingRegistration;
 
-        return {
-          features: [...state.features, feature],
+      const registration = (async () => {
+        const savedEnabled = await readSettingAction(
+          `features.${feature.id}.enabled`
+        );
+        const registeredFeature = {
+          ...feature,
+          enabled:
+            savedEnabled !== undefined ? savedEnabled : feature.enabled,
         };
-      });
+
+        set((state) => {
+          if (state.features.some((item) => item.id === feature.id)) {
+            return state;
+          }
+
+          return {
+            features: [...state.features, registeredFeature],
+          };
+        });
+      })();
+
+      pendingRegistrations.set(feature.id, registration);
+      try {
+        await registration;
+      } finally {
+        pendingRegistrations.delete(feature.id);
+      }
     },
     enableFeature: async (id) => {
       await updateSettingAction(`features.${id}.enabled`, true);

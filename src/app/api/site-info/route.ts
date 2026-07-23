@@ -1,4 +1,5 @@
-import ogs, { ErrorResult, SuccessResult } from "open-graph-scraper";
+import ogs from "open-graph-scraper";
+import type { SuccessResult } from "open-graph-scraper/types";
 import { resolve } from "url";
 import * as cheerio from "cheerio";
 
@@ -117,7 +118,7 @@ const createCardMeta = (requestUrl: string, data: SuccessResult): ISiteMeta => {
       ...image,
       url: formatUrl(image.url),
     })),
-    image: { ...image, url: formatUrl(image?.url) },
+    image: image ? { ...image, url: formatUrl(image.url) } : undefined,
     favicon: formatUrl(result.favicon),
     touchIcons: formatUrl(touchIcons),
     touchIconsPrecomposed: formatUrl(touchIconsPrecomposed),
@@ -180,7 +181,12 @@ export async function GET(request: Request) {
       );
     }
 
-    if ((e as ErrorResult)?.result) {
+    if (
+      typeof e === "object" &&
+      e !== null &&
+      "error" in e &&
+      "result" in e
+    ) {
       return Response.json(e, {
         headers: {
           "Cache-Control": "max-age=" + 60 * 60 * 1,

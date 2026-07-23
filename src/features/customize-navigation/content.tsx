@@ -13,7 +13,7 @@ import useFetchCategories from "./hooks/useFetchCategories";
 import useLayoutsPerCategoryStorage from "./hooks/useLayoutsPerCategoryStorage";
 import { getContextMenu } from "@/components/main-context-menu";
 import { cn } from "@/lib/utils";
-import { Layout, Layouts } from "react-grid-layout";
+import type { Layout, ResponsiveLayouts } from "react-grid-layout";
 import { INavItem } from "./types";
 import { useModal } from "@ebay/nice-modal-react";
 import AddLinkModal from "./addDialog";
@@ -54,8 +54,8 @@ const generateLayoutsForCategory = (
   urls: INavItem[],
   categories: ICategory[],
   categoryId: string
-): Layouts => {
-  const newLayouts: Layouts = {};
+): ResponsiveLayouts => {
+  const newLayouts: ResponsiveLayouts = {};
   const filteredUrls = getFilteredUrls(urls, categories, categoryId);
 
   Object.keys(cols).forEach((breakpoint) => {
@@ -342,9 +342,7 @@ const Content = ({
     if (!layoutsLoading) {
       const existingLayout = layoutsPerCategory[activeCategory];
       const filteredUrlsIds = filteredUrls.map((item) => item.id);
-      const layoutItemIds = existingLayout
-        ? existingLayout.lg.map((layout) => layout.i)
-        : [];
+      const layoutItemIds = existingLayout?.lg?.map((layout) => layout.i) ?? [];
 
       const layoutsNeedUpdate =
         !existingLayout ||
@@ -357,15 +355,17 @@ const Content = ({
           categories,
           activeCategory
         );
-        const newLayoutsPerCategory: any = categories.reduce(
-          (acc, category) => ({
-            ...acc,
-            [category.id]: layoutsPerCategory[category.id],
-          }),
-          {}
-        );
-        newLayoutsPerCategory["uncategorized"] =
-          layoutsPerCategory["uncategorized"];
+        const newLayoutsPerCategory: Record<string, ResponsiveLayouts> = {};
+        categories.forEach((category) => {
+          const categoryLayout = layoutsPerCategory[category.id];
+          if (categoryLayout) {
+            newLayoutsPerCategory[category.id] = categoryLayout;
+          }
+        });
+        const uncategorizedLayout = layoutsPerCategory.uncategorized;
+        if (uncategorizedLayout) {
+          newLayoutsPerCategory.uncategorized = uncategorizedLayout;
+        }
         newLayoutsPerCategory[activeCategory] = newLayouts;
         setLayoutsPerCategory(newLayoutsPerCategory);
       }
@@ -381,8 +381,8 @@ const Content = ({
   ]);
 
   const onLayoutChange = (
-    _: Layout[],
-    allLayouts: Layouts,
+    _: Layout,
+    allLayouts: ResponsiveLayouts,
     activeCategoryId: string
   ) => {
     if (isEditing) {

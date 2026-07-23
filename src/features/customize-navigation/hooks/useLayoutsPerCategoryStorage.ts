@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getLayoutsAction, saveLayoutsAction } from "../actions";
-import { Layouts } from "react-grid-layout";
+import type { ResponsiveLayouts } from "react-grid-layout";
 
 function useLayoutsPerCategoryStorage() {
   const [layoutsPerCategory, _setLayoutsPerCategory] = useState<
-    Record<string, Layouts>
+    Record<string, ResponsiveLayouts>
   >({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,10 +20,13 @@ function useLayoutsPerCategoryStorage() {
     }
   };
 
-  const setLayoutsPerCategory = async (layouts: Record<string, Layouts>) => {
-    _setLayoutsPerCategory(layouts);
-    await saveLayoutsAction(layouts);
-  };
+  const setLayoutsPerCategory = useCallback(
+    async (layouts: Record<string, ResponsiveLayouts>) => {
+      _setLayoutsPerCategory(layouts);
+      await saveLayoutsAction(layouts);
+    },
+    []
+  );
 
   useEffect(() => {
     fetchLayouts();

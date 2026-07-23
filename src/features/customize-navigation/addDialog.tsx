@@ -129,7 +129,7 @@ const getIcons = async (url: string) => {
   });
 
   // 去重 根据url
-  const map = new Map();
+  const map = new Map<string, Icon>();
   icons.forEach((item) => {
     map.set(item.url, item);
   });
@@ -155,22 +155,9 @@ const DEFAULT_VALUES = {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  title: z.string({
-    required_error: "标题不能为空。",
-  }),
-  url: z
-    .string({
-      required_error: "URL 不能为空。",
-    })
-    .url({
-      message: "URL必须是一个有效的URL。",
-    }),
-  internalUrl: z
-    .string()
-    .url({
-      message: "URL必须是一个有效的URL。",
-    })
-    .optional(),
+  title: z.string({ error: "标题不能为空。" }).min(1, "标题不能为空。"),
+  url: z.url({ error: "URL必须是一个有效的URL。" }),
+  internalUrl: z.url({ error: "URL必须是一个有效的URL。" }).optional(),
   iconUrl: z.string().optional(),
   iconWrapper: z.boolean().optional(),
   category: z.string().optional(),

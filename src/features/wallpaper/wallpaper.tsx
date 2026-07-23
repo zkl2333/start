@@ -1,6 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import Image from "next/image";
-import { fetchImages, readSettingAction, updateSettingAction, WallpaperItem } from "./actions";
+import {
+  fetchImages,
+  readSettingAction,
+  updateSettingAction,
+  WallpaperItem,
+} from "./actions";
 
 type DateString = string;
 
@@ -40,12 +45,18 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
   useEffect(() => {
     fetchImages().then(async (images) => {
       setWallpapers(images);
-      const date = await readSettingAction("features.wallpaper.BingDate");
-      if (date) {
-        setDate(date);
-      } else {
-        const dates = Object.keys(images || {});
-        setDate(dates[dates.length - 1]);
+      const savedDate = await readSettingAction<string>(
+        "features.wallpaper.BingDate"
+      );
+      const dates = Object.keys(images);
+      const nextDate =
+        savedDate && images[savedDate]
+          ? savedDate
+          : dates[dates.length - 1] || null;
+
+      setDate(nextDate);
+      if (nextDate && nextDate !== savedDate) {
+        await updateSettingAction("features.wallpaper.BingDate", nextDate);
       }
     });
   }, []);
@@ -66,7 +77,9 @@ const Wallpaper = forwardRef<WallpaperRef>((_, ref) => {
     },
   }));
 
-  if (!wallpapers || !date) return;
+  if (!wallpapers || !date) {
+    return <div className="h-full w-full bg-neutral-900" />;
+  }
 
   const currentWallpaper = wallpapers[date];
 
